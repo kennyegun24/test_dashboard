@@ -2,6 +2,8 @@ import connectMongoDb from "@/lib/mongodb";
 import Visit from "@/models/Visits";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export const GET = async (req, res) => {
   try {
     await connectMongoDb();

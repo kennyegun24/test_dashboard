@@ -13,6 +13,7 @@ const userActivitiesResource = [
 
 const revenueResource = "Sales";
 const teamsResource = "TEAM";
+export const dynamic = "force-dynamic";
 
 export const GET = async (req) => {
   try {
