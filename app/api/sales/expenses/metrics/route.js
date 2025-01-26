@@ -50,6 +50,7 @@ const getStats = async (startDate, endDate) => {
     },
   ]);
 };
+export const dynamic = "force-dynamic";
 
 export const GET = async () => {
   const _currentDate = new Date();

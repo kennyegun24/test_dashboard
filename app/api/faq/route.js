@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import connectMongoDb from "@/lib/mongodb";
 import { saveLogActivity } from "@/utils/logHelper";
 
+export const dynamic = "force-dynamic";
+
 export const GET = async (req, res) => {
   try {
     await connectMongoDb(); // Ensure the database connection

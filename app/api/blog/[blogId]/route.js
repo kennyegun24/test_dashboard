@@ -2,6 +2,8 @@ import connectMongoDb from "@/lib/mongodb";
 import Blog from "@/models/Blogs";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export const GET = async (req, { params }) => {
   const { blogId } = await params;
   console.log(blogId);

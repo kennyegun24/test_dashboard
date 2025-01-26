@@ -2,6 +2,8 @@ import connectMongoDb from "@/lib/mongodb";
 import Sales from "@/models/Sold";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 // Endpoint to query expenses breakdown
 export const GET = async (req, res) => {
   try {

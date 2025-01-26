@@ -73,6 +73,8 @@ export const POST = async (req, res) => {
   }
 };
 
+export const dynamic = "force-dynamic";
+
 export const GET = async () => {
   try {
     // Connect to the database

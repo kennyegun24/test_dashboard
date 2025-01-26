@@ -36,6 +36,8 @@ export const POST = async (req) => {
   }
 };
 
+export const dynamic = "force-dynamic";
+
 export const GET = async () => {
   try {
     await connectMongoDb();

@@ -28,6 +28,8 @@ export const POST = async (req, res) => {
   }
 };
 
+export const dynamic = "force-dynamic";
+
 export const GET = async () => {
   const endDate = new Date();
   const startDate = new Date();
