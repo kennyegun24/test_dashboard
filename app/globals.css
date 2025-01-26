@@ -3,19 +3,355 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --three-imgs-mobile: url(../public/three_imgs.png);
+  --three-imgs: url(../public/three_imgs2.png); */
+  --green-color: #23ae23;
+  --green_background: rgba(48, 163, 48, 0.196);
+  --deep_green_background: rgba(48, 163, 48, 0.433);
+  --red-color: rgb(255, 42, 42);
+  --red_background: rgba(177, 67, 67, 0.291);
+  --blue: rgb(60, 121, 214);
+  --purple: rgb(212, 63, 212);
+  --orange: rgb(255, 128, 0);
+  --black-transparent-bg: rgba(0, 0, 0, 0.761);
 }
+.excelTable {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9em;
+  position: relative;
+  overflow: auto;
+  .th,
+  .td {
+    padding: 12px 15px;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  .thead tr {
+    text-align: left;
+    font-weight: bold;
+    padding: 1rem;
+  }
+
+  .tbody {
+    background: var(--foreground);
+  }
+
+  .thead {
+    position: sticky;
+    top: 0;
+    background: var(--background);
+  }
+
+  .tbody tr {
+    border-bottom: 1px solid #6c6c6c;
   }
 }
 
+.excelContainer {
+  /* max-height: 78vh; */
+  overflow: auto;
+  width: 100%;
+  height: 94%;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #222222;
+    --foreground: #313131;
+    --btn_background: #5d8bff;
+    --btn_trans: #0048ff25;
+    --opposite-text: #000;
+    --opposite-primary-text: #494949;
+    --primary-text-color: #cecece;
+    --text-color: #f3f8ff;
+    --border-color: #dde5ed;
+    --secondary-border-color: #484848;
+    --shadow: 0px 0px 7px 2px rgb(23, 23, 23);
+    --yellow-bg-transparent: #ff00004f;
+
+    --web_development: #dce5f6;
+    --graphic_design: #f0feec;
+    --web_design: #e9daf7;
+    --mobile_development: #f2c94c;
+    --ecommerce: #a29bfe;
+    --automation_scripts: #1abc9c;
+    --cyber_security: #f7a8a8;
+    --3d_modelling: #e2b53d;
+    --website_maintainance: #9b59b6;
+    --others: #e2a56f;
+    --calendar-text-color: #4d4d4d;
+
+    /* --background-img: url(../public/background_dark.png); */
+    /* --contact-bg: url(../public/shape-dark2.png); */
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #fff;
+    --foreground: #dde5ed;
+    --btn_background: #5d8bff;
+    --opposite-text: #ffffff;
+    --text-color: #161616;
+    --primary-text-color: #6c6c6c;
+    --secondary-border-color: #ecedef;
+    --red-color: rgba(255, 80, 80, 0.502);
+    /* --background-img: url(../public/background.png); */
+    /* --contact-bg: url(../public/shape-light.png); */
+    /* --foreground: #f4f7f9; */
+  }
+}
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.calendar-component {
+  .ant-badge-status-text {
+    color: var(--primary-text-color) !important;
+    font-size: 0.6rem !important;
+  }
+
+  .ant-radio-button,
+  .ant-radio-button-wrapper {
+    background-color: var(--background) !important;
+    border: none !important;
+    color: var(--primary-text-color);
+  }
+
+  * {
+    &::-webkit-scrollbar {
+      width: 2px;
+      height: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #fff;
+    }
+  }
+}
+
+.shadows {
+  /* box-shadow: var(--shadow); */
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
+  /* z-index: 99; */
+}
+
+/* Basic editor styles */
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  a {
+    text-decoration: underline;
+    color: rgb(67, 67, 255);
+  }
+  /* List styles */
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
+
+    li p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  /* Heading styles */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.1;
+    margin-top: 2.5rem;
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 1rem;
+  }
+
+  /* Code and preformatted text styles */
+  code {
+    background-color: rgb(0, 0, 0);
+    border-radius: 0.4rem;
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 0.25em 0.3em;
+  }
+
+  pre {
+    background: #000;
+    border-radius: 0.5rem;
+    color: var(--white);
+    font-family: "JetBrainsMono", monospace;
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+
+    code {
+      background: none;
+      color: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+    }
+  }
+  mark {
+    background-color: #c5c5c5;
+    border-radius: 0.4rem;
+    box-decoration-break: clone;
+    padding: 0.1rem 0.3rem;
+  }
+  blockquote {
+    border-left: 3px solid rgb(241, 134, 255);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    padding-right: 0.5rem;
+    font-size: 0.8rem;
+    background: var(--foreground);
+    width: fit-content;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid rgb(99, 99, 99);
+    margin: 2rem 0;
+  }
+}
+
+@layer base {
+  :root {
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 142 86% 28%;
+    --primary-foreground: 356 29% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142 86% 28%;
+    /* --chart-1: 142 88% 28%;
+    --chart-2: 139 65% 20%;
+    --chart-3: 140 74% 24%;
+    --chart-4: 137 55% 15%;
+    --chart-5: 141 40% 9%;
+    --chart-6: 136 38% 8%; */
+    --chart-1: 35 89% 62%; /* #F7A23B */
+    --chart-2: 0 91% 66%; /* #F75D5F */
+    --chart-3: 191 91% 48%; /* #00C7F2 */
+    --chart-4: 150 91% 42%; /* #0FCA7A */
+    --chart-5: 205 36% 24%; /* #274754 */
+    --chart-6: 173 58% 38%; /* #2A9D90 */
+    --chart-7: 13 76% 60%; /* #E76E50 */
+    --chart-7: 138 50% 14%;
+    --chart-8: 139 60% 18%;
+    --chart-9: 140 45% 12%;
+    --chart-10: 141 30% 7%;
+    --chart-blue: 223 63% 59%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    /* --sidebar-background: blue;
+    --sidebar-foreground: purple; */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.hide_scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.hide_scrollbar::-webkit-scrollbar-thumb {
+  background: var(--background);
 }
