@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+
 const {
   Select,
   SelectTrigger,
@@ -9,6 +11,7 @@ const { Badge } = require("@/components/ui/badge");
 const { X } = require("lucide-react"); // Icon for remove
 
 const Roles = ({ onChange, newRole, handleRemove }) => {
+  const { roles } = useSelector((state) => state.roles);
   return (
     <div className="space-y-2 mb-2">
       {/* Select Dropdown */}
@@ -17,17 +20,9 @@ const Roles = ({ onChange, newRole, handleRemove }) => {
           <SelectValue placeholder="Select Roles" />
         </SelectTrigger>
         <SelectContent className="z-[9999999]">
-          <SelectItem value="Admin">Admin</SelectItem>
-          <SelectItem value="Moderator">Moderator</SelectItem>
-          <SelectItem value="Social Media Manager">
-            Social Media Manager
-          </SelectItem>
-          <SelectItem value="Sales Manager">Sales Manager</SelectItem>
-          <SelectItem value="Lead Manager">Lead Manager</SelectItem>
-          <SelectItem value="CMS Editor">CMS Editor</SelectItem>
-          <SelectItem value="Legal Pages Manager">
-            Legal Pages Manager
-          </SelectItem>
+          {roles.map((e) => (
+            <SelectItem value={e.name}>{e.name}</SelectItem>
+          ))}
         </SelectContent>
       </Select>
 

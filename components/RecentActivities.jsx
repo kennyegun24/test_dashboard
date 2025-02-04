@@ -250,7 +250,7 @@ const Activities = ({ data }) => {
               <div className="flex flex-col gap-2">
                 <p className="text-[.85rem]">
                   <span className="font-semibold text-[.9rem]">
-                    Team Invite:{" "}
+                    Role change:{" "}
                   </span>
                   {e.details.name} role changed to{" "}
                   {e.details.role?.join(", ")?.length > 15

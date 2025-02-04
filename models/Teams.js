@@ -6,16 +6,6 @@ const TeamSchema = new Schema(
       type: [String],
       default: ["Guest"],
       required: true,
-      enum: [
-        "Admin",
-        "Moderator",
-        "Social Media Manager",
-        "Sales Manager",
-        "Lead Manager",
-        "CMS Editor",
-        "Legal Pages Manager",
-        "Guest",
-      ],
       validate: {
         validator: function (roles) {
           return Array.isArray(roles) && new Set(roles).size === roles.length;

@@ -10,6 +10,7 @@ import Appheader from "@/components/App-header";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ThemeProvider } from "@/contexts/AntD";
 import { Toaster } from "@/components/ui/toaster";
+import ReduxProvider from "@/contexts/ReduxProvider";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -54,18 +55,20 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`bg-[--background] text-[--text-color] antialiased`}>
         <AntdRegistry>
-          <SidebarProvider>
-            <ThemeProvider>
-              <AppSidebar />
-              <SidebarInset>
-                <main>
-                  <Appheader />
-                  <Toaster />
-                  {children}
-                </main>
-              </SidebarInset>
-            </ThemeProvider>
-          </SidebarProvider>
+          <ThemeProvider>
+            <ReduxProvider>
+              <SidebarProvider>
+                <AppSidebar />
+                <SidebarInset>
+                  <main>
+                    <Appheader />
+                    <Toaster />
+                    {children}
+                  </main>
+                </SidebarInset>
+              </SidebarProvider>
+            </ReduxProvider>
+          </ThemeProvider>
         </AntdRegistry>
       </body>
     </html>

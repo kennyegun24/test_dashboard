@@ -355,3 +355,14 @@ body {
 .hide_scrollbar::-webkit-scrollbar-thumb {
   background: var(--background);
 }
+
+.color-colorful_value {
+  border-left: 24px solid #000;
+  padding-left: 10px;
+  margin-top: 20px;
+}
+
+.hex-picker-comp .react-colorful__hue {
+  border-radius: 0;
+  height: 10px;
+}

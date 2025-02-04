@@ -9,7 +9,7 @@ export const GET = async () => {
     await dbConnect();
 
     // Fetch all team members
-    const teamMembers = await Teams.find({});
+    const teamMembers = await Teams.find({}).lean();
 
     if (teamMembers.length === 0) {
       return NextResponse.json({ data: [] }, { status: 200 });
@@ -17,7 +17,7 @@ export const GET = async () => {
 
     // Count occurrences of each role
     const roleCounts = teamMembers.reduce((acc, member) => {
-      const roles = member.roles || ["Unknown"]; // Default to ["Unknown"] if no roles exist
+      const roles = Array.isArray(member.roles) ? member.roles : ["Unknown"]; // Default to ["Unknown"] if no roles exist
       roles.forEach((role) => {
         acc[role] = (acc[role] || 0) + 1;
       });
@@ -31,7 +31,7 @@ export const GET = async () => {
     }));
 
     // Sort roles by count in descending order
-    const sortedRoles = roleArray.sort((a, b) => b.count - a.count);
+    const sortedRoles = roleArray.sort((a, b) => b.no - a.no);
 
     // Return the role distribution data
     return NextResponse.json(

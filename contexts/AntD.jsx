@@ -104,6 +104,10 @@ export const ThemeProvider = ({ children }) => {
             Empty: {
               colorTextDescription: "var(--text-color)",
             },
+            Tabs: {
+              itemColor: "var(--primary-text-color)",
+              colorBorderSecondary: "var(--primary-text-color)",
+            },
           },
         }}
       >

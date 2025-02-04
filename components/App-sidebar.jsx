@@ -8,6 +8,7 @@ import {
   Search,
   Settings,
   User2,
+  UserRoundCog,
   Users,
 } from "lucide-react";
 
@@ -49,6 +50,11 @@ const items = [
     title: "Teams",
     url: "/teams",
     icon: Inbox,
+  },
+  {
+    title: "Roles",
+    url: "/roles",
+    icon: UserRoundCog,
   },
   {
     title: "Audit Log",
