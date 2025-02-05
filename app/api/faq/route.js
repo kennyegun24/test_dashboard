@@ -2,6 +2,7 @@ import FAQ from "@/models/FAQ"; // Import the FAQ model
 import { NextResponse } from "next/server";
 import connectMongoDb from "@/lib/mongodb";
 import { saveLogActivity } from "@/utils/logHelper";
+import { userRolesAre } from "@/utils/checkRoles";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,16 @@ export const GET = async (req, res) => {
 export const POST = async (req) => {
   try {
     await connectMongoDb();
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "COMPANY_CONTENT"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     const { faqs } = await req.json();
 
     if (!Array.isArray(faqs) || faqs.length === 0) {

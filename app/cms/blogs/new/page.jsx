@@ -53,7 +53,7 @@ const page = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "Blog post not created",
+        desc: error?.response?.data?.error || "Blog post not created",
         title: "Something went wrong",
       });
     }

@@ -43,11 +43,10 @@ const NewRole = () => {
         desc: `Role ${role.name} was successfully created`,
       });
     } catch (error) {
-      console.log(error);
       return sendToast({
         variant: "destructive",
         title: "Something went wrong",
-        desc: error.response.data.error,
+        desc: error.response.data.error || "Role not created",
       });
     }
   };

@@ -53,7 +53,7 @@ const chartConfig = {
 };
 
 const PieChartComponent = ({ data }) => {
-  const dynamicChartData = data.map((item) => ({
+  const dynamicChartData = data?.map((item) => ({
     ...item,
     fill: chartConfig[item._id]?.color || "hsl(var(--default-chart-color))",
   }));

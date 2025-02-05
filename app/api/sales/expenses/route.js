@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import Sales from "@/models/Sold";
+import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +9,13 @@ export const dynamic = "force-dynamic";
 export const GET = async (req, res) => {
   try {
     await connectMongoDb();
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "SALES"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+    }
     // Fetch all sales and aggregate expenses
     const sales = await Sales.aggregate([
       { $match: { status: "Completed" } },

@@ -53,7 +53,7 @@ const SwitchForm = () => {
       ? Object.fromEntries(
           Object.keys(FormSchema.shape).map((key) => [
             key,
-            selectedRole.permissions.includes(key),
+            selectedRole.permissions?.includes(key),
           ])
         )
       : {},
@@ -65,7 +65,7 @@ const SwitchForm = () => {
         Object.fromEntries(
           Object.keys(FormSchema.shape).map((key) => [
             key,
-            selectedRole.permissions.includes(key),
+            selectedRole.permissions?.includes(key),
           ])
         )
       );
@@ -93,7 +93,7 @@ const SwitchForm = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        title: error.response.data.error,
+        title: error.response.data.error || "Something went wrong",
       });
     }
   };

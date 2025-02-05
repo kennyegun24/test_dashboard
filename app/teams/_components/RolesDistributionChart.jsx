@@ -42,7 +42,7 @@ const chartConfig = {
 };
 
 export function RoleDistributionChart({ data }) {
-  const dynamicChartData = data.map((item, _) => ({
+  const dynamicChartData = data?.map((item, _) => ({
     ...item,
     key: _,
     fill: chartConfig[item.role]?.color || "hsl(var(--chart-1))",

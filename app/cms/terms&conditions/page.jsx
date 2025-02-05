@@ -19,7 +19,8 @@ const page = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "Terms and conditions not updated",
+        desc:
+          error?.response?.data?.error || "Terms and conditions not updated",
         title: "Something went wrong",
       });
     }

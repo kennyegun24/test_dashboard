@@ -37,6 +37,10 @@ const TeamSchema = new Schema(
       type: Date,
       default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Current time + 7 days
     },
+    // password: {
+    //   type: String,
+    //   required: true,
+    // },
   },
   { timestamps: true }
 );

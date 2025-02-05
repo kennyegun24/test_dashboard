@@ -2,6 +2,7 @@ import React from "react";
 
 import SalesPage from "./SalesPage";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
+import AccessRestricted from "@/components/AccessRestricted";
 
 const page = async () => {
   const fetchMetrics = await fetch(
@@ -33,11 +34,16 @@ const page = async () => {
   const transactionTable = await transactionsData?.data;
 
   return (
-    <SalesPage
-      metrics={metricsResponse}
-      pieData={revenueTrendsPie}
-      transactions={transactionTable}
-    />
+    <>
+      {(fetchMetrics.status === 401 ||
+        fetchRecentTransactions.status === 401 ||
+        fetchRevenueTrendsPie.status === 401) && <AccessRestricted />}
+      <SalesPage
+        metrics={metricsResponse}
+        pieData={revenueTrendsPie}
+        transactions={transactionTable}
+      />
+    </>
   );
 };
 

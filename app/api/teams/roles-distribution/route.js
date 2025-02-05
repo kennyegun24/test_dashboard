@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongodb";
 import Teams from "@/models/Teams";
+import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -7,7 +8,13 @@ export const dynamic = "force-dynamic";
 export const GET = async () => {
   try {
     await dbConnect();
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "VIEW_TEAMS"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json({ message: "Not authorized" }, { status: 401 });
+    }
     // Fetch all team members
     const teamMembers = await Teams.find({}).lean();
 

@@ -131,7 +131,7 @@ export function AddNewTeamMember({}) {
   });
   const newMember = async () => {
     try {
-      await axios.post("/api/teams/new", {
+      const req = await axios.post("/api/teams/new", {
         ...data,
       });
       setData({
@@ -147,7 +147,7 @@ export function AddNewTeamMember({}) {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: error?.response?.data?.error,
+        desc: error?.response?.data?.error || "User not added",
         title: "Something went wrong",
       });
     }

@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import Sales from "@/models/Sold";
+import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
 
 const getStats = async (startDate, endDate) => {
@@ -60,7 +61,10 @@ export const GET = async () => {
   const _previous30DaysDate = new Date(last30DaysDate_);
   _previous30DaysDate.setDate(last30DaysDate_.getDate() - 30);
   await connectMongoDb();
-
+  const isUserAllowed = await userRolesAre("67a2391d5c2ebd68a5c71b07", "SALES");
+  if (!isUserAllowed) {
+    return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+  }
   try {
     const [last30DaysData, previous30DaysData] = await Promise.all([
       getStats(last30DaysDate_, _currentDate),

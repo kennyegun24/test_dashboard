@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/popover";
 import { Mail, Phone } from "lucide-react";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
+import axios from "axios";
+import AccessRestricted from "@/components/AccessRestricted";
 const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const serviceColors = {
@@ -39,9 +41,14 @@ const endZonedTime = (event) => {
 
 const Calendar = () => {
   const fetcher = async () => {
-    const fetchData = await fetch(`${BACKEND_API_ROUTE}/book_schedule`);
-    const data = await fetchData.json();
+    // try {
+    const fetchData = await axios.get(`${BACKEND_API_ROUTE}/book_schedule`);
+    const data = await fetchData.data;
     return data?.appointments;
+    // } catch (error) {
+    //   console.log(error);
+    //   return error;
+    // }
   };
   const { data, error, isLoading } = useSWR(`calendar`, fetcher, {
     refreshInterval: null,
@@ -52,6 +59,8 @@ const Calendar = () => {
     errorRetryCount: 1,
   });
 
+  console.log(error?.status);
+
   if (isLoading) return null;
 
   const dateCellRender = (value) => {
@@ -60,12 +69,12 @@ const Calendar = () => {
       "yyyy-MM-dd"
     );
 
-    const events = data.filter((event) => {
+    const events = data?.filter((event) => {
       const eventDate = format(startZonedTime(event), "yyyy-MM-dd");
       return eventDate === currentDate;
     });
 
-    if (events.length > 0) {
+    if (events?.length > 0) {
       const backgroundColor = serviceColors[events[0].service] || "#ffffff";
       const textColor = serviceTextColors["Web Development"] || "#ffffff";
 
@@ -121,7 +130,12 @@ const Calendar = () => {
     return null;
   };
 
-  return <AntDCalendar cellRender={dateCellRender} fullscreen={true} />;
+  return (
+    <>
+      {error?.status === 401 && <AccessRestricted />}
+      <AntDCalendar cellRender={dateCellRender} fullscreen={true} />
+    </>
+  );
 };
 
 export default Calendar;

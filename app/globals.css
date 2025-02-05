@@ -14,7 +14,13 @@
   --purple: rgb(212, 63, 212);
   --orange: rgb(255, 128, 0);
   --black-transparent-bg: rgba(0, 0, 0, 0.761);
+  --black-transparent-bg-light: rgba(0, 0, 0, 0.2);
 }
+
+.restricted-backdrop {
+  backdrop-filter: blur(2px);
+}
+
 .excelTable {
   border-collapse: collapse;
   width: 100%;

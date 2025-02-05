@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import Role from "@/models/Roles";
+import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
 
 export const POST = async (req) => {
@@ -7,7 +8,16 @@ export const POST = async (req) => {
     await connectMongoDb();
 
     const { name, permissions, color, type } = await req.json();
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "CREATE_PERMISSIONS"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     // Validate required fields
     if (!name || !color) {
       return NextResponse.json(
@@ -51,6 +61,17 @@ export const POST = async (req) => {
 
 export const PUT = async (req, res) => {
   try {
+    await connectMongoDb();
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "EDIT_PERMISSIONS"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     const body = await req.json();
     const { permissions, name, color, _id } = body;
     const existingRole = await Role.findOne({ _id });

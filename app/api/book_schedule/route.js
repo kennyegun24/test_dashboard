@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import Appointment from "@/models/Appointment";
+import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
 
 export const POST = async (req, res) => {
@@ -79,7 +80,16 @@ export const GET = async () => {
   try {
     // Connect to the database
     await connectMongoDb();
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "COMPANY_CONTENT"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     // Fetch all appointments
     const appointments = await Appointment.find();
 

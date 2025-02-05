@@ -119,7 +119,7 @@ const DeleteRole = ({ data }) => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "User not removed",
+        desc: error?.response?.data?.error || "User not removed",
         title: "Something went wrong",
       });
     }

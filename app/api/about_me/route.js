@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import AboutMe from "@/models/AboutMe";
+import { userRolesAre } from "@/utils/checkRoles";
 import { saveLogActivity } from "@/utils/logHelper";
 import { NextResponse } from "next/server";
 
@@ -12,12 +13,21 @@ export const POST = async (req) => {
       return NextResponse.json(
         {
           success: false,
-          message: "Header and Body are required fields.",
+          error: "Header and Body are required fields.",
         },
         { status: 400 }
       );
     }
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "COMPANY_CONTENT"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     const existingAboutMe = await AboutMe.findOne({});
     if (existingAboutMe) {
       if (header) existingAboutMe.header = header;
@@ -64,7 +74,7 @@ export const POST = async (req) => {
       {
         success: false,
         message: "Server error. Unable to save About Me details.",
-        error: error.message,
+        error: "Server error. Unable to save About Me details.",
       },
       { status: 500 }
     );

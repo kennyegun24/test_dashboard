@@ -3,6 +3,7 @@ import dbConnect from "@/lib/mongodb"; // Function to connect to your MongoDB
 import { NextResponse } from "next/server";
 import { sendInvite } from "@/utils/sendInvite";
 import { saveLogActivity } from "@/utils/logHelper";
+import { userRolesAre } from "@/utils/checkRoles";
 
 export const POST = async (req) => {
   try {
@@ -11,7 +12,6 @@ export const POST = async (req) => {
 
     // Parse the request body
     const body = await req.json();
-    console.log(body);
     const { roles, email, full_name, contact } = body;
 
     // Validate required fields
@@ -21,7 +21,16 @@ export const POST = async (req) => {
         { status: 400 }
       );
     }
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "MANAGE_TEAMS"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that" },
+        { status: 401 }
+      );
+    }
     const checkIfExists = await Teams.findOne({ email: email });
     if (checkIfExists) {
       existingUser.roles = [...new Set([...roles])]; // Merge and ensure unique roles

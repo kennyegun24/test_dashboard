@@ -166,6 +166,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Sale from "@/models/Sold";
 import AuditLog from "@/models/LogsSchema";
+import { userRolesAre } from "@/utils/checkRoles";
 
 export const POST = async (req) => {
   try {
@@ -178,7 +179,16 @@ export const POST = async (req) => {
         { status: 400 }
       );
     }
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "ADD_NEW_SALES_RECORDS"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that" },
+        { status: 401 }
+      );
+    }
     // Separate sales into new and existing based on presence of _id
     // let newSales = sales.filter((sale) => !sale._id);
     let newSales = sales

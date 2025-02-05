@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import PrivacyPolicy from "@/models/PrivacyPolicy";
+import { userRolesAre } from "@/utils/checkRoles";
 import { saveLogActivity } from "@/utils/logHelper";
 import { NextResponse } from "next/server";
 
@@ -31,7 +32,16 @@ export const GET = async () => {
 export const POST = async (req) => {
   try {
     await connectMongoDb();
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "EDIT_PRIVACY_POLICY"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     const { content } = await req.json();
     if (!content) {
       return NextResponse.json(

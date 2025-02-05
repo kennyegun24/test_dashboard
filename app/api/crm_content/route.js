@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import Content from "@/models/Content";
+import { userRolesAre } from "@/utils/checkRoles";
 import { saveLogActivity } from "@/utils/logHelper";
 import { NextResponse } from "next/server";
 
@@ -48,13 +49,22 @@ export const POST = async (req) => {
     console.log(email, phone);
     if (!logo && !company_name && !phone && !email && !socials) {
       return NextResponse.json(
-        { success: false, message: "At least one field is required" },
+        { success: false, error: "At least one field is required" },
         { status: 400 }
       );
     }
 
     await connectMongoDb();
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "COMPANY_CONTENT"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     const existingContent = await Content.findOne({});
 
     if (!existingContent) {

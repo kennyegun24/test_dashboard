@@ -29,7 +29,7 @@ const page = () => {
       console.log(error);
       return sendToast({
         variant: "destructive",
-        desc: "Error uploading to database.",
+        desc: error?.response?.data?.error || "Error uploading to database.",
         title: "Something went wrong",
       });
     }

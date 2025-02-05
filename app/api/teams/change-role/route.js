@@ -3,6 +3,7 @@ import dbConnect from "@/lib/mongodb"; // Function to connect to your MongoDB
 import { NextResponse } from "next/server";
 import { sendInvite } from "@/utils/sendInvite";
 import { saveLogActivity } from "@/utils/logHelper";
+import { userRolesAre } from "@/utils/checkRoles";
 
 export const POST = async (req) => {
   try {
@@ -19,7 +20,16 @@ export const POST = async (req) => {
         { status: 400 }
       );
     }
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "MANAGE_TEAMS"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that" },
+        { status: 401 }
+      );
+    }
     // Create a new team member
     const updateRole = await Teams.findOneAndUpdate(
       { email: email },

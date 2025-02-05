@@ -19,7 +19,7 @@ const page = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "Privacy policy not updated",
+        desc: error?.response?.data?.error || "Privacy policy not updated",
         title: "Something went wrong",
       });
     }

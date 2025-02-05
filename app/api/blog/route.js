@@ -1,5 +1,6 @@
 import connectMongoDb from "@/lib/mongodb";
 import Blog from "@/models/Blogs";
+import { userRolesAre } from "@/utils/checkRoles";
 import { saveLogActivity } from "@/utils/logHelper";
 import { NextResponse } from "next/server";
 
@@ -18,7 +19,16 @@ export const POST = async (req) => {
       key_tags,
       meta_keywords,
     } = await req.json();
-
+    const isUserAllowed = await userRolesAre(
+      "67a2391d5c2ebd68a5c71b07",
+      "WRITE_BLOG"
+    );
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that!" },
+        { status: 401 }
+      );
+    }
     // Validate required fields
     if (
       !body ||

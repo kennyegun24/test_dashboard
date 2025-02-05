@@ -62,7 +62,7 @@ const page = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "Company data not updated",
+        desc: error?.response?.data?.error || "Company data not updated",
         title: "Something went wrong",
       });
     }
@@ -86,7 +86,7 @@ const page = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "Company contact not updated",
+        desc: error?.response?.data?.error || "Company contact not updated",
         title: "Something went wrong",
       });
     }
@@ -121,7 +121,7 @@ const page = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "Company data not updated",
+        desc: error?.response?.data?.error || "Company data not updated",
         title: "Something went wrong",
       });
     }
@@ -249,7 +249,7 @@ const FAQS = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "FAQs not updated",
+        desc: error?.response?.data?.error || "FAQs not updated",
         title: "Something went wrong",
       });
     }
@@ -322,7 +322,7 @@ const ABOUT_ME = () => {
     } catch (error) {
       return sendToast({
         variant: "destructive",
-        desc: "About me not updated",
+        desc: error?.response?.data?.error || "About me not updated",
         title: "Something went wrong",
       });
     }
