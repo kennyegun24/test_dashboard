@@ -56,7 +56,7 @@ export const POST = async (req) => {
 
     await connectMongoDb();
     const isUserAllowed = await userRolesAre(
-      "67a2391d5c2ebd68a5c71b07",
+      "67a7c7958d31ffec5db42ace",
       "COMPANY_CONTENT"
     );
     if (!isUserAllowed) {

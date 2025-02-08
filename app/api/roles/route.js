@@ -9,7 +9,7 @@ export const POST = async (req) => {
 
     const { name, permissions, color, type } = await req.json();
     const isUserAllowed = await userRolesAre(
-      "67a2391d5c2ebd68a5c71b07",
+      "67a7c7958d31ffec5db42ace",
       "CREATE_PERMISSIONS"
     );
     if (!isUserAllowed) {
@@ -63,7 +63,7 @@ export const PUT = async (req, res) => {
   try {
     await connectMongoDb();
     const isUserAllowed = await userRolesAre(
-      "67a2391d5c2ebd68a5c71b07",
+      "67a7c7958d31ffec5db42ace",
       "EDIT_PERMISSIONS"
     );
     if (!isUserAllowed) {

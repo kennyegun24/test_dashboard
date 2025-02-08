@@ -61,7 +61,7 @@ export const GET = async () => {
   const _previous30DaysDate = new Date(last30DaysDate_);
   _previous30DaysDate.setDate(last30DaysDate_.getDate() - 30);
   await connectMongoDb();
-  const isUserAllowed = await userRolesAre("67a2391d5c2ebd68a5c71b07", "SALES");
+  const isUserAllowed = await userRolesAre("67a7c7958d31ffec5db42ace", "SALES");
   if (!isUserAllowed) {
     return NextResponse.json({ error: "Not authorized" }, { status: 401 });
   }

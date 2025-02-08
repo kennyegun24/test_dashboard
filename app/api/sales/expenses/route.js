@@ -10,7 +10,7 @@ export const GET = async (req, res) => {
   try {
     await connectMongoDb();
     const isUserAllowed = await userRolesAre(
-      "67a2391d5c2ebd68a5c71b07",
+      "67a7c7958d31ffec5db42ace",
       "SALES"
     );
     if (!isUserAllowed) {
