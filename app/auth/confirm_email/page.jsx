@@ -1,4 +1,4 @@
-import OTP from "@/components/OTP";
+// import OTP from "@/components/OTP";
 import React from "react";
 import LeftSide from "../LeftSide";
 import ResendCode from "./_components/ResendCode";
@@ -11,7 +11,7 @@ const page = () => {
         <LeftSide />
       </section>
       <section className="xl:w-[60%] min-[1800px]:w-[70%] min-[2400px]:w-[70%] w-full lg:w-[50%] flex justify-center items-center min-h-[100vh] flex flex-col gap-2">
-        <OTP />
+        {/* <OTP /> */}
         <ResendCode />
       </section>
     </div>
