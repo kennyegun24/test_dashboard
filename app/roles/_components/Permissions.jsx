@@ -22,6 +22,7 @@ import axios from "axios";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import { fetchRoles } from "@/store/roles";
 import { sendToast } from "@/lib/helper";
+import { fetchUser } from "@/actions/fetchUser";
 
 const FormSchema = z.object({
   VIEW_TEAMS: z.boolean().default(false).optional(),
@@ -81,11 +82,21 @@ const SwitchForm = () => {
     //     </pre>
     //   ),
     // });
+    const user = await fetchUser();
     try {
-      const req = await axios.put(`${BACKEND_API_ROUTE}/roles`, {
-        _id: selectedRole?._id,
-        permissions: data,
-      });
+      const req = await axios.put(
+        `${BACKEND_API_ROUTE}/roles`,
+        {
+          _id: selectedRole?._id,
+          permissions: data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
       dispatch(fetchRoles());
       sendToast({
         title: "Role Edited",

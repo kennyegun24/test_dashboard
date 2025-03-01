@@ -1,5 +1,6 @@
 import { createTransport } from "nodemailer";
-const welcomEmail = (name, role) => {
+const BACKEND_ROUTE = process.env.BACKEND_ROUTE;
+const welcomEmail = (name, role, code, email) => {
   return `<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
   <head>
     <meta charset="UTF-8">
@@ -162,7 +163,7 @@ const welcomEmail = (name, role) => {
                                           <tr>
                                             <td align="center" height="48" valign="middle" class="esd-block-button es-p10t es-p10b h-auto">
                                               <span class="es-button-border" style="border-width: 1px; border-color: #5c68e2; background: #5c68e2; padding: 15px 30px; border-radius: 8px">
-                                                <a href="" target="_blank" class="es-button" style="color: #fff; text-decoration: none; font-weight: 700">
+                                                <a href='${BACKEND_ROUTE}/auth/register?token=${code}&email=${email}' target="_blank" class="es-button" style="color: #fff; text-decoration: none; font-weight: 700">
                                                   CLICK TO JOIN US
                                                 </a>
                                               </span>
@@ -321,7 +322,7 @@ const welcomEmail = (name, role) => {
   </body>
 </html>`;
 };
-export const sendInvite = async ({ user_email, subject, name, role }) => {
+export const sendInvite = async ({ user_email, subject, name, role, code }) => {
   const transporter = createTransport({
     service: "gmail",
     auth: {
@@ -335,7 +336,7 @@ export const sendInvite = async ({ user_email, subject, name, role }) => {
     to: user_email,
     subject: subject,
     // text: "That was easy!",
-    html: welcomEmail(name, role),
+    html: welcomEmail(name, role, code, user_email),
   };
   try {
     await transporter.sendMail(mailOptions);

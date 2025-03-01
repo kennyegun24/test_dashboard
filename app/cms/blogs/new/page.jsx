@@ -7,6 +7,7 @@ import Button from "@/components/Button";
 import SectionDivider from "@/components/SectionDivider";
 import axios from "axios";
 import { sendToast } from "@/lib/helper";
+import { fetchUser } from "@/actions/fetchUser";
 
 const page = () => {
   const [content, setContent] = useState(null);
@@ -29,12 +30,22 @@ const page = () => {
 
   const onSave = async () => {
     try {
-      const req = await axios.post("/api/blog", {
-        body: content,
-        ...blogDetails,
-        cover_image:
-          "https://res.cloudinary.com/drfqge33t/image/upload/v1696797490/asset22_lc0gs6.jpg",
-      });
+      const user = await fetchUser();
+      const req = await axios.post(
+        "/api/blog",
+        {
+          body: content,
+          ...blogDetails,
+          cover_image:
+            "https://res.cloudinary.com/drfqge33t/image/upload/v1696797490/asset22_lc0gs6.jpg",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
 
       setBlogDetails({
         title: null,

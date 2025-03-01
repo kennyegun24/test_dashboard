@@ -9,6 +9,7 @@ import { sendToast } from "@/lib/helper";
 import { useDispatch } from "react-redux";
 import { fetchRoles } from "@/store/roles";
 import ColorDemo from "./ColorDemo";
+import { fetchUser } from "@/actions/fetchUser";
 
 const NewRole = () => {
   const [role, setRole] = useState({
@@ -34,9 +35,20 @@ const NewRole = () => {
       });
     }
     try {
-      const req = await axios.post(`${BACKEND_API_ROUTE}/roles`, {
-        ...role,
-      });
+      const user = await fetchUser();
+
+      const req = await axios.post(
+        `${BACKEND_API_ROUTE}/roles`,
+        {
+          ...role,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
       dispatch(fetchRoles());
       sendToast({
         title: "Role Created",

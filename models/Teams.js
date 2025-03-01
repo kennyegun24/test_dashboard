@@ -33,14 +33,19 @@ const TeamSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    expiry_time: {
+    email_confirm_expire: {
       type: Date,
       default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Current time + 7 days
     },
-    // password: {
-    //   type: String,
-    //   required: true,
-    // },
+    email_confirm_code: {
+      type: String,
+    },
+    email_confirm: {
+      type: Boolean,
+    },
+    password: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

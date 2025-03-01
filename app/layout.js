@@ -1,16 +1,10 @@
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/App-sidebar";
-import Appheader from "@/components/App-header";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ThemeProvider } from "@/contexts/AntD";
-import { Toaster } from "@/components/ui/toaster";
 import ReduxProvider from "@/contexts/ReduxProvider";
+import HomeProvider from "@/contexts/Home";
+import RequestProvider from "@/contexts/RequestLLoading";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -57,16 +51,9 @@ export default function RootLayout({ children }) {
         <AntdRegistry>
           <ThemeProvider>
             <ReduxProvider>
-              <SidebarProvider>
-                <AppSidebar />
-                <SidebarInset>
-                  <main>
-                    <Appheader />
-                    <Toaster />
-                    {children}
-                  </main>
-                </SidebarInset>
-              </SidebarProvider>
+              <HomeProvider>
+                <RequestProvider>{children}</RequestProvider>
+              </HomeProvider>
             </ReduxProvider>
           </ThemeProvider>
         </AntdRegistry>

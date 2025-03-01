@@ -10,13 +10,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowRightLeft, Ban, Mail, Trash, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { Button } from "antd";
 import { sendToast } from "@/lib/helper";
 import Roles from "./Roles";
+import { RequestContext } from "@/contexts/RequestLLoading";
+import { fetchUser } from "@/actions/fetchUser";
 
 export function UserActions({ userData }) {
+  const { loading, setLoading } = useContext(RequestContext);
   return (
     <div className="grid gap-4">
       <div className="space-y-2">
@@ -34,7 +37,11 @@ export function UserActions({ userData }) {
             <Mail size={14} /> Edit role
           </AlertDialogTrigger>
           <AlertDialogContent className="bg-[--foreground]">
-            <ChangeMemberRole data={userData} />
+            <ChangeMemberRole
+              setLoading={setLoading}
+              loading={loading}
+              data={userData}
+            />
           </AlertDialogContent>
         </AlertDialog>
         <AlertDialog>
@@ -42,7 +49,11 @@ export function UserActions({ userData }) {
             <Trash size={14} /> Delete member
           </AlertDialogTrigger>
           <AlertDialogContent className="bg-[--foreground]">
-            <DeleteRole data={userData} />
+            <DeleteRole
+              setLoading={setLoading}
+              loading={loading}
+              data={userData}
+            />
           </AlertDialogContent>
         </AlertDialog>
       </div>
@@ -50,20 +61,34 @@ export function UserActions({ userData }) {
   );
 }
 
-export function ChangeMemberRole({ data }) {
+export function ChangeMemberRole({ data, setLoading, loading }) {
   const [newRole, setNewRole] = useState([...data.roles]);
   const changeRole = async () => {
+    const user = await fetchUser();
+
     try {
-      await axios.post("/api/teams/change-role", {
-        email: data.email,
-        new_role: newRole,
-        full_name: data.full_name,
-      });
+      setLoading(true);
+      await axios.post(
+        "/api/teams/change-role",
+        {
+          email: data.email,
+          new_role: newRole,
+          full_name: data.full_name,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
+      setLoading(false);
       return sendToast({
         desc: "User role changed",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error,
@@ -100,23 +125,35 @@ export function ChangeMemberRole({ data }) {
       </section>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <Button onClick={changeRole}>Save</Button>
+        <Button disabled={loading} onClick={changeRole}>
+          Save
+        </Button>
       </AlertDialogFooter>
     </div>
   );
 }
 
-const DeleteRole = ({ data }) => {
+const DeleteRole = ({ data, setLoading, loading }) => {
   const deleteMember = async () => {
     try {
+      setLoading(true);
+      const user = await fetchUser();
+
       await axios.delete("/api/teams/delete", {
         data: { email: data.email, full_name: data.full_name },
+
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+          userId: user?.userId,
+        },
       });
+      setLoading(false);
       return sendToast({
         desc: "User removed from team",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "User not removed",
@@ -136,41 +173,10 @@ const DeleteRole = ({ data }) => {
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <Button onClick={deleteMember}>Continue</Button>
+        <Button disabled={loading} onClick={deleteMember}>
+          Continue
+        </Button>
       </AlertDialogFooter>
-    </div>
-  );
-};
-
-const InputField = ({
-  label,
-  placeholder,
-  onChange,
-  divClass,
-  name,
-  className,
-  value,
-  type = "text",
-  disabled,
-}) => {
-  return (
-    <div className={cn("flex flex-col gap-1 mb-4", divClass)}>
-      <label htmlFor="" className="text-[.8rem] font-[600]">
-        {label}
-      </label>
-      <input
-        type={type}
-        name={name}
-        id=""
-        className={cn(
-          "bg-transparent md:w-[80%] text-[.8rem] border border-[--border-color] px-4 py-2 rounded-[6px]",
-          className
-        )}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        disabled={disabled}
-      />
     </div>
   );
 };

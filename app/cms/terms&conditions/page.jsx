@@ -1,4 +1,5 @@
 "use client";
+import { fetchUser } from "@/actions/fetchUser";
 import Button from "@/components/Button";
 import Tiptap from "@/components/tiptap/TipTap";
 import { sendToast } from "@/lib/helper";
@@ -8,10 +9,21 @@ import React, { useState } from "react";
 const page = () => {
   const [content, setContent] = useState(null);
   const onSave = async () => {
+    const user = await fetchUser();
+
     try {
-      const req = await axios.post("/api/terms_of_service", {
-        content: content,
-      });
+      const req = await axios.post(
+        "/api/terms_of_service",
+        {
+          content: content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
       return sendToast({
         desc: "Terms and conditions content updated",
         title: "Successful",

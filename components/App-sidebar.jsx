@@ -11,6 +11,7 @@ import {
   UserRoundCog,
   Users,
 } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 import {
   Sidebar,
@@ -38,6 +39,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
+import { signout } from "@/actions/signout";
+import Logout from "./Logout";
 
 // Menu items.
 const items = [
@@ -158,7 +161,7 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="floating" className="z-[999]">
+    <Sidebar variant="floating">
       <Header />
       <SidebarContent>
         <SidebarGroup>
@@ -236,12 +239,21 @@ const CollapseMenu = ({ item }) => {
   );
 };
 
+export const _signout = async () => {
+  try {
+    console.log("Logging out...");
+    await signout();
+  } catch (error) {
+    console.error("Error logging out:", error);
+  }
+};
+
 const Footer = () => {
   return (
-    <SidebarFooter>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <DropdownMenu>
+    <SidebarFooter className="z-[99999]">
+      <SidebarMenu className="z-[99999]">
+        <SidebarMenuItem className="z-[99999]">
+          <DropdownMenu className="z-[99999]">
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton>
                 <User2 /> Username
@@ -250,7 +262,7 @@ const Footer = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent
               side="top"
-              className="w-[--radix-popper-anchor-width]"
+              className="w-[--radix-popper-anchor-width] z-[9999]"
             >
               <DropdownMenuItem>
                 <span>Account</span>
@@ -258,9 +270,7 @@ const Footer = () => {
               <DropdownMenuItem>
                 <span>Billing</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>Sign out</span>
-              </DropdownMenuItem>
+              <Logout />
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

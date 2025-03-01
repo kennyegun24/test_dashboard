@@ -53,3 +53,32 @@ export const GET = async () => {
     );
   }
 };
+
+export const DELETE = async (req) => {
+  try {
+    await connectMongoDb();
+    const body = await req.json();
+    const { id } = body; // Expecting JSON payload with "id"
+    console.log(id);
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    const deletedService = await Service.findByIdAndDelete(id);
+
+    if (!deletedService) {
+      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "Service deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting service:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+};

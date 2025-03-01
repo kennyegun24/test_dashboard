@@ -1,4 +1,5 @@
 import connectMongoDb from "@/lib/mongodb";
+import { checkIfUserIsValid, verifyTokenAndAuthz } from "@/lib/verifyToken";
 import Blog from "@/models/Blogs";
 import { userRolesAre } from "@/utils/checkRoles";
 import { saveLogActivity } from "@/utils/logHelper";
@@ -19,13 +20,22 @@ export const POST = async (req) => {
       key_tags,
       meta_keywords,
     } = await req.json();
-    const isUserAllowed = await userRolesAre(
-      "67a7c7958d31ffec5db42ace",
-      "WRITE_BLOG"
-    );
+    const userId = req?.headers?.get("userId");
+    const verify = await verifyTokenAndAuthz(req, userId);
+    // Check if the user is valid
+    const check = checkIfUserIsValid(verify, userId);
+    // console.log(check);
+    if (check) {
+      return NextResponse.json(
+        { error: check.message },
+        { status: check.status }
+      );
+    }
+
+    const isUserAllowed = await userRolesAre(userId, "WRITE_BLOG");
     if (!isUserAllowed) {
       return NextResponse.json(
-        { error: "You are not authorized to do that!" },
+        { error: "You are not authorized to do that" },
         { status: 401 }
       );
     }

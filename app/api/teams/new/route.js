@@ -4,27 +4,34 @@ import { NextResponse } from "next/server";
 import { sendInvite } from "@/utils/sendInvite";
 import { saveLogActivity } from "@/utils/logHelper";
 import { userRolesAre } from "@/utils/checkRoles";
+import crypto from "crypto";
+import { checkIfUserIsValid, verifyTokenAndAuthz } from "@/lib/verifyToken";
 
 export const POST = async (req) => {
   try {
-    // Connect to the database
     await dbConnect();
 
-    // Parse the request body
     const body = await req.json();
     const { roles, email, full_name, contact } = body;
 
-    // Validate required fields
+    const userId = req?.headers?.get("userId");
+    const verify = await verifyTokenAndAuthz(req, userId);
+    // Check if the user is valid
+    const check = checkIfUserIsValid(verify, userId);
+    // console.log(check);
+    if (check) {
+      return NextResponse.json(
+        { error: check.message },
+        { status: check.status }
+      );
+    }
     if (!roles || !email || !full_name || !contact) {
       return NextResponse.json(
         { error: "All required fields must be provided." },
         { status: 400 }
       );
     }
-    const isUserAllowed = await userRolesAre(
-      "67a7c7958d31ffec5db42ace",
-      "MANAGE_TEAMS"
-    );
+    const isUserAllowed = await userRolesAre(userId, "MANAGE_TEAMS");
     if (!isUserAllowed) {
       return NextResponse.json(
         { error: "You are not authorized to do that" },
@@ -33,14 +40,14 @@ export const POST = async (req) => {
     }
     const checkIfExists = await Teams.findOne({ email: email });
     if (checkIfExists) {
-      existingUser.roles = [...new Set([...roles])]; // Merge and ensure unique roles
-      const updatedUser = await existingUser.save();
+      checkIfExists.roles = [...new Set([...roles])];
+      const updatedUser = await checkIfExists.save();
 
       await saveLogActivity({
         action: "ROLE_UPDATE",
         resource: "TEAM",
         details: {
-          name: existingUser.full_name,
+          name: checkIfExists.full_name,
           updatedRoles: roles,
           time: Date.now(),
         },
@@ -53,11 +60,14 @@ export const POST = async (req) => {
     }
 
     // Create a new team member
+    const email_confirm_code = crypto.randomBytes(15).toString("hex");
     const newTeamMember = new Teams({
       roles,
       email,
       full_name,
       contact,
+      email_confirm_expire: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      email_confirm_code,
     });
 
     // Save the team member to the database
@@ -67,6 +77,7 @@ export const POST = async (req) => {
       subject: "Invited to Join AJL Webcraft team",
       name: full_name,
       role: roles,
+      code: email_confirm_code,
     });
     await saveLogActivity({
       action: "ROLE_INVITE",
@@ -79,7 +90,7 @@ export const POST = async (req) => {
     });
 
     // Return the created team member
-    return NextResponse.json({ data: savedTeamMember }, { status: 201 });
+    return NextResponse.json({ data: "savedTeamMember" }, { status: 201 });
   } catch (error) {
     let err = "";
     const errors = error.errors;
@@ -90,7 +101,7 @@ export const POST = async (req) => {
     } else {
       err = "Failed to create team member";
     }
-    console.log(error.errors);
+    console.log(error);
     return NextResponse.json({ error: err }, { status: 500 });
   }
 };

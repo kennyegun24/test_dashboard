@@ -1,4 +1,5 @@
 import connectMongoDb from "@/lib/mongodb";
+import { checkIfUserIsValid, verifyTokenAndAuthz } from "@/lib/verifyToken";
 import Role from "@/models/Roles";
 import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
@@ -8,13 +9,22 @@ export const POST = async (req) => {
     await connectMongoDb();
 
     const { name, permissions, color, type } = await req.json();
-    const isUserAllowed = await userRolesAre(
-      "67a7c7958d31ffec5db42ace",
-      "CREATE_PERMISSIONS"
-    );
+    const userId = req?.headers?.get("userId");
+    const verify = await verifyTokenAndAuthz(req, userId);
+    // Check if the user is valid
+    const check = checkIfUserIsValid(verify, userId);
+    // console.log(check);
+    if (check) {
+      return NextResponse.json(
+        { error: check.message },
+        { status: check.status }
+      );
+    }
+
+    const isUserAllowed = await userRolesAre(userId, "CREATE_PERMISSIONS");
     if (!isUserAllowed) {
       return NextResponse.json(
-        { error: "You are not authorized to do that!" },
+        { error: "You are not authorized to do that" },
         { status: 401 }
       );
     }
@@ -62,13 +72,23 @@ export const POST = async (req) => {
 export const PUT = async (req, res) => {
   try {
     await connectMongoDb();
-    const isUserAllowed = await userRolesAre(
-      "67a7c7958d31ffec5db42ace",
-      "EDIT_PERMISSIONS"
-    );
+    const userId = req?.headers?.get("userId");
+    const verify = await verifyTokenAndAuthz(req, userId);
+    // Check if the user is valid
+    console.log(verify);
+    const check = checkIfUserIsValid(verify, userId);
+    // console.log(check);
+    if (check) {
+      return NextResponse.json(
+        { error: check.message },
+        { status: check.status }
+      );
+    }
+
+    const isUserAllowed = await userRolesAre(userId, "EDIT_PERMISSIONS");
     if (!isUserAllowed) {
       return NextResponse.json(
-        { error: "You are not authorized to do that!" },
+        { error: "You are not authorized to do that" },
         { status: 401 }
       );
     }

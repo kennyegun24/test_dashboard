@@ -1,19 +1,32 @@
 import dbConnect from "@/lib/mongodb";
+import { checkIfUserIsValid, verifyTokenAndAuthz } from "@/lib/verifyToken";
 import Teams from "@/models/Teams";
 import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export const GET = async () => {
+export const GET = async (req) => {
   try {
     await dbConnect();
-    const isUserAllowed = await userRolesAre(
-      "67a7c7958d31ffec5db42ace",
-      "VIEW_TEAMS"
-    );
+    const userId = req?.headers?.get("userId");
+    const verify = await verifyTokenAndAuthz(req, userId);
+    // Check if the user is valid
+    const check = checkIfUserIsValid(verify, userId);
+    // console.log(check);
+    if (check) {
+      return NextResponse.json(
+        { error: check.message },
+        { status: check.status }
+      );
+    }
+
+    const isUserAllowed = await userRolesAre(userId, "VIEW_TEAMS");
     if (!isUserAllowed) {
-      return NextResponse.json({ message: "Not authorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: "You are not authorized to do that" },
+        { status: 401 }
+      );
     }
     // Fetch all team members
     const teamMembers = await Teams.find({}).lean();

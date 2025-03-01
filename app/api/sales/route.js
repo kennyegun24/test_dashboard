@@ -167,6 +167,7 @@ import dbConnect from "@/lib/mongodb";
 import Sale from "@/models/Sold";
 import AuditLog from "@/models/LogsSchema";
 import { userRolesAre } from "@/utils/checkRoles";
+import { checkIfUserIsValid, verifyTokenAndAuthz } from "@/lib/verifyToken";
 
 export const POST = async (req) => {
   try {
@@ -179,10 +180,19 @@ export const POST = async (req) => {
         { status: 400 }
       );
     }
-    const isUserAllowed = await userRolesAre(
-      "67a7c7958d31ffec5db42ace",
-      "ADD_NEW_SALES_RECORDS"
-    );
+    const userId = req?.headers?.get("userId");
+    const verify = await verifyTokenAndAuthz(req, userId);
+    // Check if the user is valid
+    const check = checkIfUserIsValid(verify, userId);
+    // console.log(check);
+    if (check) {
+      return NextResponse.json(
+        { error: check.message },
+        { status: check.status }
+      );
+    }
+
+    const isUserAllowed = await userRolesAre(userId, "ADD_NEW_SALES_RECORDS");
     if (!isUserAllowed) {
       return NextResponse.json(
         { error: "You are not authorized to do that" },

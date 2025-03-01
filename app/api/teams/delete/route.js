@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { sendInvite } from "@/utils/sendInvite";
 import { saveLogActivity } from "@/utils/logHelper";
 import { userRolesAre } from "@/utils/checkRoles";
+import { checkIfUserIsValid, verifyTokenAndAuthz } from "@/lib/verifyToken";
 
 export const DELETE = async (req) => {
   try {
@@ -20,10 +21,24 @@ export const DELETE = async (req) => {
         { status: 400 }
       );
     }
-    const isUserAllowed = await userRolesAre(
-      "67a7c7958d31ffec5db42ace",
-      "MANAGE_TEAMS"
-    );
+    const userId = req?.headers?.get("userId");
+    const verify = await verifyTokenAndAuthz(req, userId);
+    // Check if the user is valid
+    const check = checkIfUserIsValid(verify, userId);
+    // console.log(check);
+    if (check) {
+      return NextResponse.json(
+        { error: check.message },
+        { status: check.status }
+      );
+    }
+    if (!roles || !email || !full_name || !contact) {
+      return NextResponse.json(
+        { error: "All required fields must be provided." },
+        { status: 400 }
+      );
+    }
+    const isUserAllowed = await userRolesAre(userId, "MANAGE_TEAMS");
     if (!isUserAllowed) {
       return NextResponse.json(
         { error: "You are not authorized to do that" },

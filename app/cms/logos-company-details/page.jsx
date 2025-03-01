@@ -11,6 +11,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { TextArea } from "@/components/TextArea";
 import axios from "axios";
 import { sendToast } from "@/lib/helper";
+import { fetchUser } from "@/actions/fetchUser";
 
 const page = () => {
   const [contents, setContents] = useState({
@@ -44,11 +45,21 @@ const page = () => {
     }
   };
   const onSaveLogoName = async () => {
+    const user = await fetchUser();
     try {
-      const req = await axios.post("/api/crm_content", {
-        logo: contents.logo,
-        company_name: contents.company_name,
-      });
+      const req = await axios.post(
+        "/api/crm_content",
+        {
+          logo: contents.logo,
+          company_name: contents.company_name,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
 
       setContents((p) => ({
         ...p,
@@ -68,11 +79,21 @@ const page = () => {
     }
   };
   const onSaveContact = async () => {
+    const user = await fetchUser();
     try {
-      const req = await axios.post("/api/crm_content", {
-        phone: contents.phone,
-        email: contents.email,
-      });
+      const req = await axios.post(
+        "/api/crm_content",
+        {
+          phone: contents.phone,
+          email: contents.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
 
       setContents((p) => ({
         ...p,
@@ -99,10 +120,20 @@ const page = () => {
           url,
         })
       );
+      const user = await fetchUser();
 
-      const req = await axios.post("/api/crm_content", {
-        socials: socialsArray,
-      });
+      const req = await axios.post(
+        "/api/crm_content",
+        {
+          socials: socialsArray,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
 
       setContents((p) => ({
         ...p,
@@ -236,8 +267,19 @@ const FAQS = () => {
   };
 
   const onSaveFaqs = async () => {
+    const user = await fetchUser();
+
     try {
-      const response = await axios.post("/api/faq", { faqs: faq });
+      const response = await axios.post(
+        "/api/faq",
+        { faqs: faq },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
 
       setFaq({
         ...newFq,
@@ -305,11 +347,22 @@ const ABOUT_ME = () => {
   });
 
   const onSaveAboutMe = async () => {
+    const user = await fetchUser();
+
     try {
-      const response = await axios.post("/api/about_me", {
-        header: aboutMe.header,
-        body: aboutMe.body,
-      });
+      const response = await axios.post(
+        "/api/about_me",
+        {
+          header: aboutMe.header,
+          body: aboutMe.body,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
 
       setAboutMe({
         header: null,

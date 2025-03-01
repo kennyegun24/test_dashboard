@@ -1,9 +1,16 @@
+import { fetchUser } from "@/actions/fetchUser";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchRoles = createAsyncThunk("fetchContent", async () => {
-  const req = await axios.get(`${BACKEND_API_ROUTE}/roles`);
+  const user = await fetchUser();
+  const req = await axios.get(`${BACKEND_API_ROUTE}/roles`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}`,
+      userId: user?.userId,
+    },
+  });
   const data = await req.data;
   return data?.roles;
 });

@@ -5,6 +5,7 @@ import { Download } from "lucide-react";
 import LoadingCalculator from "./LoadingCalculator";
 import { kFormatter, sendToast } from "@/lib/helper";
 import axios from "axios";
+import { fetchUser } from "@/actions/fetchUser";
 
 const page = () => {
   const [projectNums, setProjectNums] = useState({
@@ -17,9 +18,20 @@ const page = () => {
   console.log(processedJSON);
   const saveToDatabase = async () => {
     try {
-      const req = await axios.post("/api/sales", {
-        sales: processedJSON,
-      });
+      const user = await fetchUser();
+
+      const req = await axios.post(
+        "/api/sales",
+        {
+          sales: processedJSON,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
       const res = await req.data;
       return sendToast({
         desc: "Sales successfully updated",

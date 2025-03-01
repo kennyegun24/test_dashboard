@@ -1,4 +1,5 @@
 import connectMongoDb from "@/lib/mongodb";
+import { checkIfUserIsValid, verifyTokenAndAuthz } from "@/lib/verifyToken";
 import Sales from "@/models/Sold";
 import { userRolesAre } from "@/utils/checkRoles";
 import { NextResponse } from "next/server";
@@ -53,7 +54,7 @@ const getStats = async (startDate, endDate) => {
 };
 export const dynamic = "force-dynamic";
 
-export const GET = async () => {
+export const GET = async (req) => {
   const _currentDate = new Date();
   const last30DaysDate_ = new Date(_currentDate);
   last30DaysDate_.setDate(_currentDate.getDate() - 30);
@@ -61,9 +62,24 @@ export const GET = async () => {
   const _previous30DaysDate = new Date(last30DaysDate_);
   _previous30DaysDate.setDate(last30DaysDate_.getDate() - 30);
   await connectMongoDb();
-  const isUserAllowed = await userRolesAre("67a7c7958d31ffec5db42ace", "SALES");
+  const userId = req?.headers?.get("userId");
+  const verify = await verifyTokenAndAuthz(req, userId);
+  // Check if the user is valid
+  const check = checkIfUserIsValid(verify, userId);
+  // console.log(check);
+  if (check) {
+    return NextResponse.json(
+      { error: check.message },
+      { status: check.status }
+    );
+  }
+
+  const isUserAllowed = await userRolesAre(userId, "SALES");
   if (!isUserAllowed) {
-    return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+    return NextResponse.json(
+      { error: "You are not authorized to do that" },
+      { status: 401 }
+    );
   }
   try {
     const [last30DaysData, previous30DaysData] = await Promise.all([

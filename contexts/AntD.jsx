@@ -97,6 +97,7 @@ export const ThemeProvider = ({ children }) => {
               colorTextHeading: "var(--text-color)",
               controlItemBgActive: "var(--background)",
               colorIcon: "var(--text-color)",
+              zIndexPopup: 999999,
             },
             Upload: {
               colorBorder: "var(--btn_background)",

@@ -22,6 +22,7 @@ import { sendToast } from "@/lib/helper";
 import axios from "axios";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import { fetchRoles } from "@/store/roles";
+import { fetchUser } from "@/actions/fetchUser";
 
 const RoleContext = ({ data, dispatch, selectedRole, selectRole }) => {
   const dispatchData = (e, _) => {
@@ -78,10 +79,21 @@ function AlertDialogDemo({ dispatch, selectedRole }) {
       });
     }
     try {
-      const req = await axios.put(`${BACKEND_API_ROUTE}/roles`, {
-        ...role,
-        _id: selectedRole._id,
-      });
+      const user = await fetchUser();
+
+      const req = await axios.put(
+        `${BACKEND_API_ROUTE}/roles`,
+        {
+          ...role,
+          _id: selectedRole._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
       dispatch(fetchRoles());
       sendToast({
         title: "Role Updated",

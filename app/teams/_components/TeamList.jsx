@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Table } from "antd";
 import { createStyles } from "antd-style";
 import {
@@ -23,6 +23,9 @@ import InputField from "@/components/TextInput";
 import axios from "axios";
 import { sendToast } from "@/lib/helper";
 import Roles from "./Roles";
+import { RequestContext } from "@/contexts/RequestLLoading";
+import { fetchUser } from "@/actions/fetchUser";
+
 const useStyle = createStyles(({ css, token }) => {
   const { antCls } = token;
   return {
@@ -91,6 +94,8 @@ const TeamMembers = ({ data }) => {
     key: _,
   }));
   const { styles } = useStyle();
+  const { loading, setLoading } = useContext(RequestContext);
+
   return (
     <div className="w-full">
       <div className="flex justify-between items-center">
@@ -104,7 +109,11 @@ const TeamMembers = ({ data }) => {
           <AlertDialogContent
             className={"md:max-w-[500px] max-w-[80%] bg-[--foreground]"}
           >
-            <AddNewTeamMember data={data} />
+            <AddNewTeamMember
+              setLoading={setLoading}
+              loading={loading}
+              data={data}
+            />
           </AlertDialogContent>
         </AlertDialog>
       </div>
@@ -122,7 +131,7 @@ const TeamMembers = ({ data }) => {
 };
 export default TeamMembers;
 
-export function AddNewTeamMember({}) {
+export function AddNewTeamMember({ setLoading, loading }) {
   const [data, setData] = useState({
     roles: [],
     email: "",
@@ -131,20 +140,35 @@ export function AddNewTeamMember({}) {
   });
   const newMember = async () => {
     try {
-      const req = await axios.post("/api/teams/new", {
-        ...data,
-      });
+      setLoading(true);
+      const user = await fetchUser();
+      const req = await axios.post(
+        "/api/teams/new",
+        {
+          ...data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
       setData({
         roles: [],
         email: "",
         full_name: "",
         contact: "",
       });
+      console.log(user);
+      setLoading(false);
       return sendToast({
         desc: `${data.full_name} successfully added to team`,
         title: "Success",
       });
     } catch (error) {
+      console.log(error);
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "User not added",
@@ -211,7 +235,9 @@ export function AddNewTeamMember({}) {
       </section>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <Button onClick={newMember}>Save</Button>
+        <Button onClick={newMember} disabled={loading}>
+          Save
+        </Button>
       </AlertDialogFooter>
     </div>
   );

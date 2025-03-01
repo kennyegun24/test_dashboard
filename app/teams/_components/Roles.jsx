@@ -1,4 +1,6 @@
-import { useSelector } from "react-redux";
+import { fetchRoles } from "@/store/roles";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const {
   Select,
@@ -12,6 +14,12 @@ const { X } = require("lucide-react"); // Icon for remove
 
 const Roles = ({ onChange, newRole, handleRemove }) => {
   const { roles } = useSelector((state) => state.roles);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (roles.length <= 0) {
+      dispatch(fetchRoles());
+    }
+  }, []);
   return (
     <div className="space-y-2 mb-2">
       {/* Select Dropdown */}

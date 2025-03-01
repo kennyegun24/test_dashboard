@@ -19,6 +19,7 @@ import {
 } from "./helper";
 import axios from "axios";
 import { sendToast } from "@/lib/helper";
+import { fetchUser } from "@/actions/fetchUser";
 const { Dragger } = Upload;
 
 const Automatic = ({
@@ -120,8 +121,15 @@ const Automatic = ({
   };
   useEffect(() => {
     const fetchData = async () => {
+      const user = await fetchUser();
+
       try {
-        const fetchData = await axios.get("/api/sales/transactions");
+        const fetchData = await axios.get("/api/sales/transactions", {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        });
         const response = await fetchData.data;
         const json = await response.data;
         setJsonData(json);
