@@ -77,7 +77,7 @@ export const POST = async (req, res) => {
 
 export const dynamic = "force-dynamic";
 
-export const GET = async () => {
+export const GET = async (req) => {
   try {
     // Connect to the database
     const userId = req?.headers?.get("userId");
