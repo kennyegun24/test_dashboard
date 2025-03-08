@@ -84,6 +84,7 @@ export const GET = async (req) => {
     const verify = await verifyTokenAndAuthz(req, userId);
     // Check if the user is valid
     const check = checkIfUserIsValid(verify, userId);
+    await connectMongoDb();
     // console.log(check);
     if (check) {
       return NextResponse.json(
