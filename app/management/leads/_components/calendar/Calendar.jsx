@@ -12,6 +12,8 @@ import { Mail, Phone } from "lucide-react";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import axios from "axios";
 import AccessRestricted from "@/components/AccessRestricted";
+import { getUserSession } from "@/lib/getUserSession";
+import { fetchUser } from "@/actions/fetchUser";
 const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const serviceColors = {
@@ -42,7 +44,13 @@ const endZonedTime = (event) => {
 const Calendar = () => {
   const fetcher = async () => {
     // try {
-    const fetchData = await axios.get(`${BACKEND_API_ROUTE}/book_schedule`);
+    const user = await fetchUser();
+    const fetchData = await axios.get(`${BACKEND_API_ROUTE}/book_schedule`, {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+        userId: user?.userId,
+      },
+    });
     const data = await fetchData.data;
     return data?.appointments;
     // } catch (error) {
