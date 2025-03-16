@@ -53,16 +53,40 @@ const page = () => {
       }));
     }
   };
+  const handleUploadToCloudinary = async (file) => {
+    const uploadPreset = "ml_default";
+    // const cloud_name = process.env.CLOUDINARY_CLOUD_NAME
+    const cloud_name = "dnlbx1kqu";
+    // setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
+
+    try {
+      const response = await axios.post(cloudinaryUrl, formData);
+      const imageUrl = response.data.secure_url;
+      // setLoading(false);
+      // message.success("Upload successful!");
+      console.log(imageUrl);
+      return imageUrl;
+    } catch (error) {
+      // setLoading(false);
+      // message.error("Upload failed!");
+      console.error("Error uploading image:", error);
+    }
+  };
+
   const onSaveLogoName = async () => {
     const user = await fetchUser();
     try {
-      const formData = new FormData();
-      formData.append("file", contents.logo);
-      console.log(logo);
-      const logoReq = await axios.post("/api/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      const imageUrl = await logoReq.data.url;
+      // const formData = new FormData();
+      // formData.append("file", contents.logo);
+      const imageUrl = await handleUploadToCloudinary(contents.logo);
+      // const logoReq = await axios.post("/api/upload", formData, {
+      // headers: { "Content-Type": "multipart/form-data" },
+      // });
+      // const imageUrl = await logoReq.data.url;
       const req = await axios.post(
         "/api/crm_content",
         {
