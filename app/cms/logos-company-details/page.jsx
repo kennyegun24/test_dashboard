@@ -325,9 +325,11 @@ const FAQS = () => {
         }
       );
 
-      setFaq({
-        ...newFq,
-      });
+      setFaq([
+        {
+          ...newFq,
+        },
+      ]);
       return sendToast({
         desc: "FAQs updated",
         title: "Successful",
