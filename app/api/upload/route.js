@@ -4,11 +4,11 @@
 // import { writeFile } from "fs/promises";
 // import formidable from "formidable";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
 // export async function POST(req) {
 //   try {
