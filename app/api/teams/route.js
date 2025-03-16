@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 export const GET = async (req) => {
   try {
+    await connectMongoDb();
     const userId = req?.headers?.get("userId");
     const verify = await verifyTokenAndAuthz(req, userId);
     // Check if the user is valid

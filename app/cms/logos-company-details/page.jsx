@@ -15,7 +15,7 @@ import { fetchUser } from "@/actions/fetchUser";
 
 const page = () => {
   const [contents, setContents] = useState({
-    logo: "https://res.cloudinary.com/drfqge33t/image/upload/v1725288322/twitter_oqv8je.jpg",
+    logo: null,
     company_name: "",
     phone: "",
     email: "",
@@ -27,6 +27,15 @@ const page = () => {
       twitter: null,
     },
   });
+  const onChangeLogo = (e) => {
+    if (e.target.name === "logo") {
+      console.log(e.target.files[0]);
+      setContents((prev) => ({
+        ...prev,
+        logo: e.target.files[0],
+      }));
+    }
+  };
   const onChange = (e) => {
     const { name, value } = e.target;
     if (name in contents.socials) {
@@ -47,10 +56,17 @@ const page = () => {
   const onSaveLogoName = async () => {
     const user = await fetchUser();
     try {
+      const formData = new FormData();
+      formData.append("file", contents.logo);
+      console.log(logo);
+      const logoReq = await axios.post("/api/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const imageUrl = await logoReq.data.url;
       const req = await axios.post(
         "/api/crm_content",
         {
-          logo: contents.logo,
+          logo: imageUrl,
           company_name: contents.company_name,
         },
         {
@@ -63,7 +79,7 @@ const page = () => {
 
       setContents((p) => ({
         ...p,
-        logo: "https://res.cloudinary.com/drfqge33t/image/upload/v1725288322/twitter_oqv8je.jpg",
+        logo: null,
         company_name: "",
       }));
       return sendToast({
@@ -71,9 +87,11 @@ const page = () => {
         title: "Successful",
       });
     } catch (error) {
+      console.log(error);
       return sendToast({
         variant: "destructive",
-        desc: error?.response?.data?.error || "Company data not updated",
+        // desc: error?.response?.data?.error || "Company data not updated",
+        desc: "Company data not updated",
         title: "Something went wrong",
       });
     }
@@ -171,8 +189,10 @@ const page = () => {
             <Image
               src={logo}
               className="h-[80px] rounded-sm w-[80px] object-contain border-dashed border border-[--border-color]"
+              name="logo"
             />
             <input
+              onChange={onChangeLogo}
               type="file"
               className="hidden"
               name="logo"

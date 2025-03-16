@@ -5,16 +5,28 @@ import { RoleDistributionChart } from "./_components/RolesDistributionChart";
 import TeamMembers from "./_components/TeamList";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import AccessRestricted from "@/components/AccessRestricted";
+import { fetchUser } from "@/actions/fetchUser";
 
 const page = async () => {
+  const user = await fetchUser();
   const fetchTeamMembers = await fetch(`${BACKEND_API_ROUTE}/teams`, {
     cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${user?.token}`,
+      userId: user?.userId,
+    },
   });
   const teamsData = await fetchTeamMembers.json();
   const teamTable = await teamsData?.data;
 
   const fetchRoles = await fetch(
     `${BACKEND_API_ROUTE}/teams/roles-distribution`,
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+        userId: user?.userId,
+      },
+    },
     {
       cache: "no-store",
     }

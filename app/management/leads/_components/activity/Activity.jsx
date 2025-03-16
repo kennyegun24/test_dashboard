@@ -8,7 +8,7 @@ const Activity = () => {
     allTasks: [],
     recentTasks: [],
   });
-  const [sortVal, setSortVal] = useState(null);
+  const [sortVal, setSortVal] = useState("weekly");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const makeRequest = async () => {

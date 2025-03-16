@@ -4,10 +4,11 @@ import Task from "@/models/Tasks";
 import connectMongoDb from "@/lib/mongodb";
 import { startOfMonth, startOfWeek, subMonths } from "date-fns";
 
+export const dynamic = "force-dynamic";
+
 export const GET = async (req, res) => {
   try {
     const range = req.nextUrl.searchParams.get("range");
-    console.log(range);
     let filter = {};
 
     const now = new Date();
@@ -66,4 +67,3 @@ export const POST = async (req, res) => {
     return NextResponse.json({});
   }
 };
-``;
