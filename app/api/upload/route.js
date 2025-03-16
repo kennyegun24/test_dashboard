@@ -149,13 +149,13 @@ export async function POST(req) {
     }
 
     // **Delete previous logo images**
-    const files = await readdir(uploadDir);
-    for (const file of files) {
-      if (file.startsWith("logo_")) {
-        await unlink(path.join(uploadDir, file));
-        console.log(`Deleted old logo: ${file}`);
-      }
-    }
+    // const files = await readdir(uploadDir);
+    // for (const file of files) {
+    //   if (file.startsWith("logo_")) {
+    //     await unlink(path.join(uploadDir, file));
+    //     console.log(`Deleted old logo: ${file}`);
+    //   }
+    // }
 
     // **Write new logo file properly**
     await writeFile(filePath, fileBuffer, "binary");
