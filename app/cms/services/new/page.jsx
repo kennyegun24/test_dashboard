@@ -8,19 +8,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import InputField from "@/components/TextInput";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import axios from "axios";
 import Button from "@/components/Button";
 import { sendToast } from "@/lib/helper";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const NewTask = () => {
   const [details, setDetails] = useState({});
+  const { setLoading } = useContext(RequestContext);
 
   const submit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const user = await fetchUser();
 
     try {
@@ -40,8 +43,9 @@ const NewTask = () => {
         title: "Service added",
         desc: "New service has been added",
       });
+      setLoading(false);
     } catch (error) {
-      console.log(error);
+      setLoading(false);
       sendToast({
         desc: "Something went wrong",
         variant: "destructive",
@@ -99,7 +103,7 @@ const NewTask = () => {
             />
           </div>
         </section>
-        <Button onSave={submit} className={"mx-auto"} text={"Create task"} />
+        <Button onSave={submit} className={"mx-auto"} text={"Add Service"} />
       </form>
     </div>
   );

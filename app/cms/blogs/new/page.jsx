@@ -1,6 +1,6 @@
 "use client";
 import Tiptap from "@/components/tiptap/TipTap";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ImageField from "@/components/ImageField";
 import DocumentField from "@/components/DocumentField";
 import Button from "@/components/Button";
@@ -8,6 +8,7 @@ import SectionDivider from "@/components/SectionDivider";
 import axios from "axios";
 import { sendToast } from "@/lib/helper";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const page = () => {
   const [content, setContent] = useState(null);
@@ -27,10 +28,27 @@ const page = () => {
       [e.target.name]: e.target.value,
     }));
   };
+  const { setLoading } = useContext(RequestContext);
+
+  const isBlogDetailsEmpty = (blogDetails) => {
+    return Object.values(blogDetails).some(
+      (value) => value === null || value === undefined || value === ""
+    );
+  };
 
   const onSave = async () => {
     try {
+      setLoading(true);
       const user = await fetchUser();
+
+      if (isBlogDetailsEmpty(blogDetails)) {
+        setLoading(false);
+        return sendToast({
+          variant: "destructive",
+          desc: "No field should be empty",
+          title: "Empty fields detected",
+        });
+      }
       const req = await axios.post(
         "/api/blog",
         {
@@ -57,11 +75,13 @@ const page = () => {
         key_tags: null,
         meta_keywords: null,
       });
+      setLoading(false);
       return sendToast({
         desc: "Blog post created",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "Blog post not created",

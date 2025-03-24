@@ -5,6 +5,8 @@ import { userRolesAre } from "@/utils/checkRoles";
 import { saveLogActivity } from "@/utils/logHelper";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export const POST = async (req) => {
   try {
     await connectMongoDb();
@@ -89,8 +91,6 @@ export const POST = async (req) => {
     );
   }
 };
-
-export const dynamic = "force-dynamic";
 
 export const GET = async () => {
   try {
