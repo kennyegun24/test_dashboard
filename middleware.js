@@ -91,7 +91,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "./lib/session";
 
 // const protectedRoutes = ["/dashboard", "/"];
-const publicRoutes = ["/auth/login"];
+const publicRoutes = [
+  "/auth/login",
+  "/auth/forgot-password",
+  "/auth/register",
+  "/auth/reset-password",
+  "/auth/confirm_email",
+];
 
 export default async function middleware(req) {
   const path = req.nextUrl.pathname;
