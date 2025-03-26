@@ -90,7 +90,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "./lib/session";
 
-const protectedRoutes = ["/dashboard", "/"];
+// const protectedRoutes = ["/dashboard", "/"];
 const publicRoutes = ["/auth/login"];
 
 export default async function middleware(req) {
@@ -116,7 +116,7 @@ export default async function middleware(req) {
     "Access-Control-Allow-Headers",
     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MDS, Content-Type, Date, X-Api-Version"
   );
-  const isProtectedRoute = protectedRoutes.includes(path);
+  const isProtectedRoute = !publicRoutes.includes(path);
   console.log(isProtectedRoute, path);
   const isPublicRoute = publicRoutes.includes(path);
 
