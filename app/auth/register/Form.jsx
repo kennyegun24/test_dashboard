@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Link from "next/link";
@@ -8,17 +8,20 @@ import axios from "axios";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import { signUpSchema } from "@/lib/zod";
 import { sendToast } from "@/lib/helper";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const AuthForm = () => {
+  const { setLoading, loading } = useContext(RequestContext);
   const params = useSearchParams();
   const token = params.get("token");
   const email = params.get("email");
   const [password, setPassword] = useState({
     terms: false,
-    password: null,
+    password: "",
   });
   const reg = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const validateFields = signUpSchema.safeParse({
       email: email || "",
       password: password.password,
@@ -35,6 +38,7 @@ const AuthForm = () => {
         desc: <Err />,
         title: "Password set not successful",
       });
+      setLoading(false);
       return;
     }
     try {
@@ -43,7 +47,14 @@ const AuthForm = () => {
         code: token,
         email: email,
       });
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      return sendToast({
+        desc: "Something went wrong",
+        title: "UnSuccessful",
+      });
+    }
   };
   const onChange = (e) => {
     if (e.target.type === "checkbox") {
@@ -88,9 +99,10 @@ const AuthForm = () => {
         <section className="flex gap-4 flex-col">
           <Inputs />
           <span className="text-[12px] px-2 text-[--light_text]">
-            At least 10 Latin letters, with one uppercase and one digit.
+            At least 8 letters, with one uppercase, one lowercase, one special
+            character and one digit.
           </span>
-          <CheckBoxes />
+          {/* <CheckBoxes /> */}
           <button className="bg-[--btn_background] text-[--white] py-2 rounded-[6px]">
             Sign Up
           </button>
