@@ -1,28 +1,52 @@
 "use client";
-import React, { useContext, useState, useTransition } from "react";
+import React, { useContext, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Link from "next/link";
 import { RequestContext } from "@/contexts/RequestLLoading";
 import { login } from "@/actions/login";
+import { sendToast } from "@/lib/helper";
 
 const AuthForm = () => {
   const [userInput, setUserInput] = useState({ password: "", email: "" });
-  const [errMessage, setErrMessage] = useState(null);
-  const [isPending, startTransition] = useTransition();
   const { setLoading, loading } = useContext(RequestContext);
   const loginUser = async (e) => {
     setLoading(true);
     e.preventDefault();
-    setErrMessage(null);
-    startTransition(() => {
-      login(userInput).then((err) => {
-        err?.error && setErrMessage(JSON.parse(err?.error));
-        setLoading(false);
-      });
-    });
-  };
+    // startTransition(() => {
+    //   login(userInput).then((err) => {
+    //     console.log(err);
+    //     err?.error && setErrMessage(JSON.parse(err?.error));
+    //     setLoading(false);
+    //   });
+    // });
+    try {
+      const req = await login(userInput);
 
+      if (req.zodError) {
+        const Err = () => (
+          <p className="whitespace-pre text-red-500">{req.zodError}</p>
+        );
+        setLoading(false);
+        return sendToast({
+          desc: <Err />,
+          title: "Login not successful",
+          // variant: "destructive",
+        });
+      }
+      if (req.error) {
+        setLoading(false);
+        return sendToast({
+          desc: req.error,
+          title: "Login not successful",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
   const onChange = (e) => {
     setUserInput((p) => ({ ...p, [e.target.name]: e.target.value }));
   };

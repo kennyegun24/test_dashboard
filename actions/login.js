@@ -13,7 +13,11 @@ export const login = async (values) => {
   const validateFields = signInSchema.safeParse(values);
 
   if (!validateFields.success) {
-    return { error: JSON.stringify(validateFields.error) };
+    return {
+      zodError: JSON.parse(validateFields.error.message)
+        .map((e) => e.message)
+        .join("\n"),
+    };
   }
   try {
     const res = await axios.post(`${BACKEND_API_ROUTE}/teams/auth/login`, {
@@ -25,8 +29,8 @@ export const login = async (values) => {
       await createSession(user?._id, user?.access_token);
     }
   } catch (error) {
-    console.log(error);
-    return error?.response?.data?.error;
+    // console.log(error.response.data);
+    return { error: error?.response?.data?.error };
   }
   redirect("/", RedirectType.push);
 };

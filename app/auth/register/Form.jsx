@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
+import { signUpSchema } from "@/lib/zod";
+import { sendToast } from "@/lib/helper";
 
 const AuthForm = () => {
   const params = useSearchParams();
@@ -17,6 +19,24 @@ const AuthForm = () => {
   });
   const reg = async (e) => {
     e.preventDefault();
+    const validateFields = signUpSchema.safeParse({
+      email: email || "",
+      password: password.password,
+      token,
+    });
+    if (!validateFields.success) {
+      const errMssg = JSON.parse(validateFields.error.message)
+        .map((e) => e.message)
+        .join("\n");
+      const Err = () => (
+        <p className="whitespace-pre text-red-500">{errMssg}</p>
+      );
+      sendToast({
+        desc: <Err />,
+        title: "Password set not successful",
+      });
+      return;
+    }
     try {
       const req = await axios.post(`${BACKEND_API_ROUTE}/teams/auth/register`, {
         password: password.password,
@@ -104,7 +124,7 @@ const CheckBoxes = () => {
           htmlFor="terms_service"
           className="text-[12px] text-[--text_color]"
         >
-          I agree to TemplateOF
+          I agree to AJL Webcraft{" "}
           <Link className="text-[--green_color]" href={"/terms&conditions"}>
             Terms of use
           </Link>{" "}
