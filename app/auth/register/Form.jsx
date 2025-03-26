@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import { signUpSchema } from "@/lib/zod";
@@ -12,6 +12,7 @@ import { RequestContext } from "@/contexts/RequestLLoading";
 
 const AuthForm = () => {
   const { setLoading, loading } = useContext(RequestContext);
+  const redirect = useRouter();
   const params = useSearchParams();
   const token = params.get("token");
   const email = params.get("email");
@@ -48,6 +49,7 @@ const AuthForm = () => {
         email: email,
       });
       setLoading(false);
+      return redirect.push("/auth/login");
     } catch (error) {
       setLoading(false);
       return sendToast({
