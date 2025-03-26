@@ -32,12 +32,6 @@ export const DELETE = async (req) => {
         { status: check.status }
       );
     }
-    if (!roles || !email || !full_name || !contact) {
-      return NextResponse.json(
-        { error: "All required fields must be provided." },
-        { status: 400 }
-      );
-    }
     const isUserAllowed = await userRolesAre(userId, "MANAGE_TEAMS");
     if (!isUserAllowed) {
       return NextResponse.json(
