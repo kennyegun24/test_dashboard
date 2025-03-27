@@ -122,7 +122,7 @@ const Inputs = () => {
       <input
         className="px-4 py-[0.75rem] bg-[--auth_bg] text-[14px] rounded-full border-[--secondary-border-color] border"
         placeholder="Set password"
-        type="text"
+        type="password"
         name="password"
       />
     </>

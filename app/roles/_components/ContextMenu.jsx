@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import InputField from "@/components/TextInput";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import Button from "@/components/Button";
 import { sendToast } from "@/lib/helper";
@@ -23,6 +23,7 @@ import axios from "axios";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import { fetchRoles } from "@/store/roles";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const RoleContext = ({ data, dispatch, selectedRole, selectRole }) => {
   const dispatchData = (e, _) => {
@@ -56,6 +57,8 @@ const RoleContext = ({ data, dispatch, selectedRole, selectRole }) => {
 export default RoleContext;
 
 function AlertDialogDemo({ dispatch, selectedRole }) {
+  const { setLoading, loading } = useContext(RequestContext);
+
   const [role, setRole] = useState({
     name: selectedRole.name,
     color: selectedRole.color,
@@ -67,12 +70,15 @@ function AlertDialogDemo({ dispatch, selectedRole }) {
   };
 
   const onSave = async () => {
+    setLoading(true);
     if (!role.name.trim()) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         title: "Role name should not be empty",
       });
     } else if (!role.color.trim()) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         title: "Role color should not be empty",
@@ -100,8 +106,10 @@ function AlertDialogDemo({ dispatch, selectedRole }) {
         desc: `Role ${role.name} was successfully updated`,
       });
       setIsOpen(false);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         title: "Something went wrong",

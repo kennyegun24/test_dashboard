@@ -2,13 +2,16 @@
 import { fetchUser } from "@/actions/fetchUser";
 import Button from "@/components/Button";
 import Tiptap from "@/components/tiptap/TipTap";
+import { RequestContext } from "@/contexts/RequestLLoading";
 import { sendToast } from "@/lib/helper";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const page = () => {
   const [content, setContent] = useState(null);
+  const { setLoading, loading } = useContext(RequestContext);
   const onSave = async () => {
+    setLoading(true);
     const user = await fetchUser();
 
     try {
@@ -24,11 +27,13 @@ const page = () => {
           },
         }
       );
+      setLoading(false);
       return sendToast({
         desc: "Terms and conditions content updated",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc:

@@ -1,13 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TabsDemo from "./Tabs";
 import { Download } from "lucide-react";
 import LoadingCalculator from "./LoadingCalculator";
 import { kFormatter, sendToast } from "@/lib/helper";
 import axios from "axios";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const page = () => {
+  const { setLoading, loading } = useContext(RequestContext);
   const [projectNums, setProjectNums] = useState({
     projectsValue: 0,
     expenses: 0,
@@ -18,6 +20,7 @@ const page = () => {
   console.log(processedJSON);
   const saveToDatabase = async () => {
     try {
+      setLoading(true);
       const user = await fetchUser();
 
       const req = await axios.post(
@@ -33,12 +36,14 @@ const page = () => {
         }
       );
       const res = await req.data;
+      setLoading(false);
       return sendToast({
         desc: "Sales successfully updated",
         title: "Upload successful",
       });
     } catch (error) {
       console.log(error);
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "Error uploading to database.",

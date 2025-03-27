@@ -2,14 +2,17 @@
 import { fetchUser } from "@/actions/fetchUser";
 import Button from "@/components/Button";
 import Tiptap from "@/components/tiptap/TipTap";
+import { RequestContext } from "@/contexts/RequestLLoading";
 import { sendToast } from "@/lib/helper";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const page = () => {
+  const { setLoading, loading } = useContext(RequestContext);
   const [content, setContent] = useState(null);
   const onSave = async () => {
     const user = await fetchUser();
+    setLoading(true);
 
     try {
       const req = await axios.post(
@@ -24,11 +27,13 @@ const page = () => {
           },
         }
       );
+      setLoading(false);
       return sendToast({
         desc: "Privacy policy content updated",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "Privacy policy not updated",

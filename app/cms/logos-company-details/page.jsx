@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logo from "@/public/logo.png";
 import Image from "next/image";
 import InputField from "@/components/TextInput";
@@ -12,8 +12,11 @@ import { TextArea } from "@/components/TextArea";
 import axios from "axios";
 import { sendToast } from "@/lib/helper";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const page = () => {
+  const { setLoading, loading } = useContext(RequestContext);
+
   const [contents, setContents] = useState({
     logo: null,
     company_name: "",
@@ -79,6 +82,7 @@ const page = () => {
 
   const onSaveLogoName = async () => {
     const user = await fetchUser();
+    setLoading(true);
     try {
       // const formData = new FormData();
       // formData.append("file", contents.logo);
@@ -106,11 +110,13 @@ const page = () => {
         logo: null,
         company_name: "",
       }));
+      setLoading(false);
       return sendToast({
         desc: "Company name and logo updated",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       console.log(error);
       return sendToast({
         variant: "destructive",
@@ -122,6 +128,7 @@ const page = () => {
   };
   const onSaveContact = async () => {
     const user = await fetchUser();
+    setLoading(true);
     try {
       const req = await axios.post(
         "/api/crm_content",
@@ -142,11 +149,13 @@ const page = () => {
         phone: "",
         email: "",
       }));
+      setLoading(false);
       return sendToast({
         desc: "Company contacts updated",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "Company contact not updated",
@@ -156,6 +165,7 @@ const page = () => {
   };
   const onSaveSocials = async () => {
     try {
+      setLoading(true);
       const socialsArray = Object.entries(contents.socials).map(
         ([platform, url]) => ({
           platform,
@@ -187,11 +197,13 @@ const page = () => {
           twitter: null,
         },
       }));
+      setLoading(false);
       return sendToast({
         desc: "Company socials updated",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "Company data not updated",
@@ -311,6 +323,7 @@ const FAQS = () => {
   };
 
   const onSaveFaqs = async () => {
+    setLoading(true);
     const user = await fetchUser();
 
     try {
@@ -330,11 +343,13 @@ const FAQS = () => {
           ...newFq,
         },
       ]);
+      setLoading(false);
       return sendToast({
         desc: "FAQs updated",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "FAQs not updated",
@@ -393,6 +408,7 @@ const ABOUT_ME = () => {
   });
 
   const onSaveAboutMe = async () => {
+    setLoading(true);
     const user = await fetchUser();
 
     try {
@@ -414,11 +430,13 @@ const ABOUT_ME = () => {
         header: null,
         body: null,
       });
+      setLoading(false);
       return sendToast({
         desc: "About me updated",
         title: "Successful",
       });
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         desc: error?.response?.data?.error || "About me not updated",

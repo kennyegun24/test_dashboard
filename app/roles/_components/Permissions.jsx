@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,6 +23,7 @@ import { BACKEND_API_ROUTE } from "@/utils/api_route";
 import { fetchRoles } from "@/store/roles";
 import { sendToast } from "@/lib/helper";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const FormSchema = z.object({
   VIEW_TEAMS: z.boolean().default(false).optional(),
@@ -46,6 +47,7 @@ const FormSchema = z.object({
 });
 
 const SwitchForm = () => {
+  const { setLoading, loading } = useContext(RequestContext);
   const { selectedRole } = useSelector((state) => state.roles);
   const dispatch = useDispatch();
   const form = useForm({
@@ -74,6 +76,7 @@ const SwitchForm = () => {
   }, [selectedRole, form]);
 
   const onSubmit = async (data) => {
+    setLoading(true);
     // toast({
     //   title: "You submitted the following values:",
     //   description: (
@@ -101,7 +104,9 @@ const SwitchForm = () => {
       sendToast({
         title: "Role Edited",
       });
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         title: error.response.data.error || "Something went wrong",

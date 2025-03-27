@@ -1,6 +1,6 @@
 "use client";
 import InputField from "@/components/TextInput";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ColorPicker, Space } from "antd";
 import Button from "@/components/Button";
 import axios from "axios";
@@ -10,8 +10,10 @@ import { useDispatch } from "react-redux";
 import { fetchRoles } from "@/store/roles";
 import ColorDemo from "./ColorDemo";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const NewRole = () => {
+  const { setLoading, loading } = useContext(RequestContext);
   const [role, setRole] = useState({
     name: "",
     color: "",
@@ -23,12 +25,16 @@ const NewRole = () => {
   };
 
   const onSave = async () => {
+    setLoading(true);
     if (!role.name.trim()) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         title: "Role name should not be empty",
       });
     } else if (!role.color.trim()) {
+      setLoading(false);
+
       return sendToast({
         variant: "destructive",
         title: "Role color should not be empty",
@@ -54,7 +60,9 @@ const NewRole = () => {
         title: "Role Created",
         desc: `Role ${role.name} was successfully created`,
       });
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         title: "Something went wrong",

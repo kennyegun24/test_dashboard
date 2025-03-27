@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { DatePickerDemo } from "./TimeDatePicker";
 import InputField from "@/components/TextInput";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
@@ -16,13 +16,16 @@ import axios from "axios";
 import Button from "@/components/Button";
 import { sendToast } from "@/lib/helper";
 import { fetchUser } from "@/actions/fetchUser";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const NewTask = () => {
   const [details, setDetails] = useState({});
   const [selectedDateTime, setSelectedDateTime] = useState(null);
+  const { setLoading, loading } = useContext(RequestContext);
 
   const submit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const user = await fetchUser();
     try {
       await axios.post(
@@ -43,6 +46,7 @@ const NewTask = () => {
         desc: "New task has been created and assigned to a team member",
       });
     } catch (error) {
+      setLoading(false);
       console.log(error);
       sendToast({
         desc: "Something went wrong",
@@ -51,6 +55,7 @@ const NewTask = () => {
     }
   };
   const onChange = (e) => {
+    setLoading(false);
     setDetails((p) => ({
       ...p,
       [e.target.name]: e.target.value,
