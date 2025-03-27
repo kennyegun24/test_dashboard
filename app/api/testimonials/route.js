@@ -16,6 +16,7 @@ export const GET = async (req) => {
       }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Something went wrong", details: error.message },
       { status: 500, headers: { "Content-Type": "application/json" } }
