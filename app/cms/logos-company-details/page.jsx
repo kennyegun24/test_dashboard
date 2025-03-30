@@ -298,6 +298,7 @@ const page = () => {
 export default page;
 
 const FAQS = () => {
+  const { setLoading, loading } = useContext(RequestContext);
   const newFq = {
     id: uuidv4(),
     question: "",
@@ -402,6 +403,7 @@ const FAQS = () => {
 };
 
 const ABOUT_ME = () => {
+  const { setLoading, loading } = useContext(RequestContext);
   const [aboutMe, setAboutMe] = useState({
     header: null,
     body: null,
