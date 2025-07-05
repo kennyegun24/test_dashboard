@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectMongoDb } from "@/lib/mongodb";
-import Teams from "@/models/team";
+import Teams from "@/models/Teams";
+// import Teams from "@/models/team";
 
 export const POST = async (req) => {
   try {
