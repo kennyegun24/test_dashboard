@@ -1,13 +1,17 @@
 import { Cloud } from "lucide-react";
-import { useState } from "react";
 
-const DocumentField = ({ label, placeholder, id }) => {
-  const [selectedFiles, setSelectedFiles] = useState(null);
+const DocumentField = ({
+  label,
+  placeholder,
+  id,
+  blogDetails,
+  setBlogDetails,
+}) => {
   const onChange = (e) => {
     const convertToArray = Array.from(e.target.files);
-    setSelectedFiles(convertToArray);
+    setBlogDetails((prev) => ({ ...prev, docs: e.target.files[0] }));
   };
-  console.log(selectedFiles);
+  console.log(blogDetails);
   return (
     <div className="flex flex-col gap-2 my-4">
       <span className="text-[.8rem] font-[600]">{label}</span>
@@ -21,13 +25,16 @@ const DocumentField = ({ label, placeholder, id }) => {
         </button>
       </label>
       <div>
-        {selectedFiles?.length > 0 && (
+        {blogDetails?.docs && (
           <div>
-            {selectedFiles.map((e, _) => (
+            {/* {blogDetails?.docs.map((e, _) => (
               <p key={_} className="text-[--btn_background] text-[0.7rem]">
                 {e.name}
               </p>
-            ))}
+            ))} */}
+            <p className="text-[--btn_background] text-[0.7rem]">
+              {blogDetails.docs.name}
+            </p>
           </div>
         )}
       </div>

@@ -35,9 +35,11 @@ const AuthForm = () => {
       const Err = () => (
         <p className="whitespace-pre text-red-500">{errMssg}</p>
       );
+
       sendToast({
+        // variant: "destructive",
+        title: req.data?.message || "Successful",
         desc: <Err />,
-        title: "Password set not successful",
       });
       setLoading(false);
       return;
@@ -51,10 +53,12 @@ const AuthForm = () => {
       setLoading(false);
       return redirect.push("/auth/login");
     } catch (error) {
+      console.log(error);
       setLoading(false);
       return sendToast({
-        desc: "Something went wrong",
-        title: "UnSuccessful",
+        variant: "destructive",
+        title: error.response.status || "404 Error",
+        desc: error.response.data.error || "Something went wrong",
       });
     }
   };

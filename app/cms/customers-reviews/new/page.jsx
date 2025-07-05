@@ -1,29 +1,85 @@
 "use client";
+import { fetchUser } from "@/actions/fetchUser";
 import Button from "@/components/Button";
 import ImageField from "@/components/ImageField";
 import { TextArea } from "@/components/TextArea";
 import InputField from "@/components/TextInput";
-import React from "react";
+import { RequestContext } from "@/contexts/RequestLLoading";
+import { sendToast } from "@/lib/helper";
+import { BACKEND_API_ROUTE } from "@/utils/api_route";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 
 const page = () => {
-  const onSave = () => {};
+  const { setLoading } = useContext(RequestContext);
+  const [review, setReview] = useState({
+    name: "",
+    review: "",
+  });
+  const onSave = async ({}) => {
+    setLoading(true);
+    if (!review.name || !review.review)
+      return sendToast({
+        variant: "destructive",
+        title: "Parameters invalid",
+        desc: "Client name and Client review should not be empty.",
+      });
+    const user = await fetchUser();
+    try {
+      const updated = await axios.post(
+        `${BACKEND_API_ROUTE}/reviews`,
+        {
+          clientName: review.name,
+          clientReview: review.review,
+          clientImage:
+            "https://res.cloudinary.com/drfqge33t/image/upload/v1745830957/freepik__background__19650_cqvfwu.png",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            userId: user?.userId,
+          },
+        }
+      );
+      if (updated.status === 200) {
+        sendToast({
+          title: "Successful",
+          desc: "Client review added successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      sendToast({
+        variant: "destructive",
+        title: "Update failed",
+        desc: error?.response?.data?.error || "Could not add review.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col md:w-[95%] bg-[--foreground] md:px-4 md:py-4 mb-8 py-2 px-2 rounded-[8px] m-auto w-full lg:w-[80%] xl:w-[75%] 2xl:w-[60%] min-[2500px]:w-[35%] min-[3000px]:w-[33%]">
-      <InputField label={"Client's name"} placeholder={"Enter client's name"} />
+      <InputField
+        onChange={(e) => setReview((p) => ({ ...p, name: e.target.value }))}
+        label={"Client's name"}
+        placeholder={"Enter client's name"}
+      />
       <TextArea
+        onChange={(e) => setReview((p) => ({ ...p, review: e.target.value }))}
         label={"Client's review"}
         placeholder={"What the client said"}
       />
-      <HashTags
+      {/* <HashTags
         label={"Hashtags"}
         optional={true}
         placeholder={"Hashtags client used!"}
-      />
-      <ImageField
+      /> */}
+      {/* <ImageField
         label={"Client's image"}
         placeholder={"Place client's image here"}
         id={"client's image"}
-      />
+      /> */}
       <Button onSave={onSave} text={"Save"} />
     </div>
   );

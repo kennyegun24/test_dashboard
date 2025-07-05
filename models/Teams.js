@@ -43,6 +43,13 @@ const TeamSchema = new Schema(
     email_confirm: {
       type: Boolean,
     },
+    password_reset_otp: {
+      type: String,
+    },
+    password_reset_expire: {
+      type: Date,
+      default: () => new Date(Date.now() + 10 * 60 * 1000), // Current time + 10mins
+    },
     password: {
       type: String,
     },

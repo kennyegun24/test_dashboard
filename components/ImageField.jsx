@@ -1,9 +1,13 @@
 "use client";
 import { Cloud } from "lucide-react";
-import { useState } from "react";
 
-const ImageField = ({ label, placeholder, id }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
+const ImageField = ({
+  label,
+  placeholder,
+  id,
+  blogDetails,
+  setBlogDetails,
+}) => {
   return (
     <div className="flex flex-col gap-2 my-4">
       <span className="text-[.8rem] font-[600]">{label}</span>
@@ -17,11 +21,14 @@ const ImageField = ({ label, placeholder, id }) => {
         </button>
       </label>
       <div>
-        {selectedImage && (
+        {blogDetails?.cover_image && (
           <>
             <div className={""}>
               <img
-                src={selectedImage && URL.createObjectURL(selectedImage)}
+                src={
+                  blogDetails.cover_image &&
+                  URL.createObjectURL(blogDetails.cover_image)
+                }
                 height={75}
                 width={75}
                 alt="selected image"
@@ -39,7 +46,12 @@ const ImageField = ({ label, placeholder, id }) => {
         name=""
         accept="image/*"
         id={id}
-        onChange={(e) => setSelectedImage(e.target.files[0])}
+        onChange={(e) =>
+          setBlogDetails((prev) => ({
+            ...prev,
+            cover_image: e.target.files[0],
+          }))
+        }
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import Service from "@/models/Service"; // Import the Service model
 import connectMongoDb from "@/lib/mongodb"; // Ensure your MongoDB connection utility is set up
 import { NextResponse } from "next/server";
+import { userRolesAre } from "@/utils/checkRoles";
 
 export const POST = async (req) => {
   try {
@@ -14,7 +15,14 @@ export const POST = async (req) => {
         { status: 400 }
       );
     }
-
+    const userId = req?.headers?.get("userId");
+    const isUserAllowed = await userRolesAre(userId, "SERVICES");
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that" },
+        { status: 401 }
+      );
+    }
     const newService = new Service({
       title,
       body,
@@ -29,6 +37,52 @@ export const POST = async (req) => {
     );
   } catch (error) {
     console.error("Error creating service:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+};
+
+export const PUT = async (req) => {
+  try {
+    await connectMongoDb();
+
+    const { id, title, body, short_desc } = await req.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Service ID is required" },
+        { status: 400 }
+      );
+    }
+    const userId = req?.headers?.get("userId");
+    const isUserAllowed = await userRolesAre(userId, "SERVICES");
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that" },
+        { status: 401 }
+      );
+    }
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (body !== undefined) updateData.body = body;
+    if (short_desc !== undefined) updateData.short_desc = short_desc;
+
+    const updatedService = await Service.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    if (!updatedService) {
+      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "Service updated successfully", service: updatedService },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating service:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -63,7 +117,14 @@ export const DELETE = async (req) => {
     if (!id) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
     }
-
+    const userId = req?.headers?.get("userId");
+    const isUserAllowed = await userRolesAre(userId, "SERVICES");
+    if (!isUserAllowed) {
+      return NextResponse.json(
+        { error: "You are not authorized to do that" },
+        { status: 401 }
+      );
+    }
     const deletedService = await Service.findByIdAndDelete(id);
 
     if (!deletedService) {

@@ -1,9 +1,48 @@
-import React from "react";
-import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
+"use client";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
+import { BACKEND_API_ROUTE } from "@/utils/api_route";
+import { sendToast } from "@/lib/helper";
+import { RequestContext } from "@/contexts/RequestLLoading";
 
 const AuthForm = () => {
+  const [email, setEmail] = useState(null);
+  const { setLoading, loading } = useContext(RequestContext);
+
+  const sendReq = async () => {
+    setLoading(true);
+    try {
+      if (!email)
+        return sendToast({
+          variant: "destructive",
+          title: "Unsuccessful",
+          desc: "Email should be present",
+        });
+      const req = await axios.post(
+        `${BACKEND_API_ROUTE}/teams/auth/reset-password`,
+        {
+          email,
+        }
+      );
+      console.log(await req.data?.message);
+      return sendToast({
+        // variant: "destructive",
+        title: req.data?.message || "Successful",
+        desc: "Check your mail for further instructions",
+      });
+    } catch (error) {
+      console.log(error.response.data.error);
+      return sendToast({
+        variant: "destructive",
+        title: error.response.status || "404 Error",
+        desc: error.response.data.error || "Something went wrong",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex-col items-center flex gap-4">
       <div className="logo_bg" />
@@ -22,8 +61,11 @@ const AuthForm = () => {
           </p>
         </section>
         <section className="flex gap-4 flex-col">
-          <Inputs />
-          <button className="bg-[--deep_green] text-[--white] text-[14px] py-2 rounded-[6px]">
+          <Inputs setEmail={setEmail} email={email} />
+          <button
+            onClick={sendReq}
+            className="bg-[--deep_green_background] text-[--white] text-[14px] py-2 rounded-[6px]"
+          >
             Send Instructions
           </button>
         </section>
@@ -34,11 +76,13 @@ const AuthForm = () => {
 
 export default AuthForm;
 
-const Inputs = () => {
+const Inputs = ({ email, setEmail }) => {
   return (
     <>
       <input
-        className="px-4 py-[0.75rem] bg-[--auth_bg] text-[14px] rounded-full"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="px-4 py-[0.75rem] bg-[--auth_bg] text-[14px] rounded-full border border-[--primary-text-color]"
         placeholder="Enter an email address"
         type="text"
       />

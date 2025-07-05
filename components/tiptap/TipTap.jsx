@@ -13,7 +13,7 @@ import parse from "html-react-parser";
 import HardBreak from "@tiptap/extension-hard-break";
 
 const Tiptap = ({ content, setContent, onSave }) => {
-  const [purifiedContent, setPurifiedContent] = useState(null);
+  // const [purifiedContent, setPurifiedContent] = useState(null);
   const onChange = (e) => {
     setContent(e);
     console.log(e);
@@ -144,7 +144,7 @@ const Tiptap = ({ content, setContent, onSave }) => {
         },
       }),
     ],
-    content: "<p>Hello World! 🌎️</p>",
+    content: content,
     editorProps: {
       attributes: {
         class:
@@ -157,10 +157,10 @@ const Tiptap = ({ content, setContent, onSave }) => {
     },
   });
 
-  useEffect(() => {
-    const _purifiedContent = DOMPurify?.sanitize(content);
-    setPurifiedContent(_purifiedContent);
-  }, [content]);
+  // useEffect(() => {
+  // const _purifiedContent = DOMPurify?.sanitize(content);
+  // setPurifiedContent(_purifiedContent);
+  // }, [content]);
 
   return (
     <div className="tiptap w-full flex flex-col bg-[#383737]">

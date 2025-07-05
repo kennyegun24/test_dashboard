@@ -109,6 +109,10 @@ export const ThemeProvider = ({ children }) => {
               itemColor: "var(--primary-text-color)",
               colorBorderSecondary: "var(--primary-text-color)",
             },
+            Input: {
+              colorTextPlaceholder: "var(--primary-text-color)",
+              colorIcon: "var(--primary-text-color)",
+            },
           },
         }}
       >
