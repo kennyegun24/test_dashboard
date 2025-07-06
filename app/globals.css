@@ -71,7 +71,7 @@
     --opposite-primary-text: #494949;
     --primary-text-color: #cecece;
     --text-color: #f3f8ff;
-    --border-color: #dde5ed;
+    --border-color: #2a2a2a;
     --secondary-border-color: #484848;
     --shadow: 0px 0px 7px 2px rgb(23, 23, 23);
     --yellow-bg-transparent: #ff00004f;
@@ -100,8 +100,9 @@
     --btn_background: #5d8bff;
     --opposite-text: #ffffff;
     --text-color: #161616;
-    --primary-text-color: #6c6c6c;
+    --primary-text-color: #353535;
     --secondary-border-color: #ecedef;
+    --border-color: #dde5ed;
     --red-color: rgba(255, 80, 80, 0.502);
     /* --background-img: url(../public/background.png); */
     /* --contact-bg: url(../public/shape-light.png); */

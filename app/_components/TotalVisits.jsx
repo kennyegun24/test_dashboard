@@ -55,7 +55,7 @@ const YearlyMonthly = ({ setTimeFrame, timeFrame }) => {
   return (
     <div className="flex gap-1">
       <Select onValueChange={onChange}>
-        <SelectTrigger className="w-fit text-[.8rem]">
+        <SelectTrigger className="w-fit text-[--primary-text-color]  text-[.8rem]">
           <SelectValue placeholder="Time frame" />
         </SelectTrigger>
         <SelectContent>
@@ -69,7 +69,7 @@ const YearlyMonthly = ({ setTimeFrame, timeFrame }) => {
       </Select>
       {timeFrame.timeFrame === "monthly" && (
         <Select onValueChange={onChangeYear} className="max-w-[80px]">
-          <SelectTrigger className="max-w-[80px] w-fit text-[.8rem]">
+          <SelectTrigger className="max-w-[80px] text-[--primary-text-color] w-fit text-[.8rem]">
             <SelectValue placeholder="Year" />
           </SelectTrigger>
           <SelectContent>
@@ -114,7 +114,7 @@ export default function TotalVisits() {
     }
   );
   return (
-    <Card className="h-full shadows bg-[--foreground]">
+    <Card className="h-full shadows bg-[--foreground] border-[--border-color]">
       <CardHeader className="flex flex-col items-center space-y-0 border-b p-0 px-2 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>Total Visits</CardTitle>

@@ -113,6 +113,10 @@ export const ThemeProvider = ({ children }) => {
               colorTextPlaceholder: "var(--primary-text-color)",
               colorIcon: "var(--primary-text-color)",
             },
+            Card: {
+              colorBorder: "red",
+              colorBorderBg: "green",
+            },
           },
         }}
       >

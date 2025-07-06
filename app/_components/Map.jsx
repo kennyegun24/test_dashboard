@@ -54,11 +54,13 @@ const Map = ({ maps }) => {
                   geography={geo}
                   style={{
                     default: {
-                      fill: isHighlighted(geo) ? "#22ad01" : "#D6D6DA",
+                      fill: isHighlighted(geo)
+                        ? "#22ad01"
+                        : "var(--text-color)",
                       outline: "none",
                     },
                     hover: {
-                      fill: isHighlighted(geo) ? "var(--background)" : "#111",
+                      fill: isHighlighted(geo) ? "var(--background)" : "#555",
                       outline: "none",
                     },
                     pressed: {
