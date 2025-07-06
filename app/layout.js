@@ -35,12 +35,12 @@ export const metadata = {
   },
   title: {
     template: "%s | AJL Webcraft Dashboard",
-    default: "AJL WebCraft",
+    default: "AJL Webcraft Dashboard",
   },
   description: {
     default:
       "Dashboard to overview clients, revenue and organize client's works.",
-    template: `%s | asja`,
+    template: `%s | Dashboard to overview clients, revenue and organize client's works.`,
   },
 };
 
