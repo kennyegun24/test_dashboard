@@ -134,6 +134,7 @@ export const DELETE = async (req) => {
       );
     }
     const userId = req?.headers?.get("userId");
+    console.log(userId);
     const isUserAllowed = await userRolesAre(userId, "REVIEWS");
     if (!isUserAllowed) {
       return NextResponse.json(

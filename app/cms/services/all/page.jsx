@@ -30,18 +30,13 @@ const handleDelete = async (id, setServices, setIsLoading) => {
   const user = await fetchUser();
 
   try {
-    const deleteItem = axios.delete(
-      `${BACKEND_API_ROUTE}/service`,
-      {
-        data: { id },
+    const deleteItem = axios.delete(`${BACKEND_API_ROUTE}/service`, {
+      data: { id },
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+        userId: user?.userId,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          userId: user?.userId,
-        },
-      }
-    );
+    });
     if ((await deleteItem).status === 200) {
       makeRequest(setServices, setIsLoading);
       return sendToast({

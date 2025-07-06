@@ -14,10 +14,10 @@ const LeftSide = () => {
         }}
       />
       <div className="absolute top-[50%] transform translate-y-[-50%] p-8 2xl:pl-[10%] mb-8">
-        <h3 className="text-[42px] font-[700] mb-8 w-[85%]">
+        <h3 className="text-[42px] text-[#fff] font-[700] mb-8 w-[85%]">
           Welcome to AJL Webcraft, multifaceted consulting firm,
         </h3>
-        <p className="leading-[28px] text-[--primary-text-color]">
+        <p className="leading-[28px] text-[#fff]">
           Seamlessly integrating it, business, digital marketing, and tech
           development expertise to drive business success
         </p>
