@@ -9,7 +9,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Spinner from "@/components/spinner";
 import { fetchUser } from "@/actions/fetchUser";
 console.log("customers reviews page file");
-alert("customers review file");
 const useStyle = createStyles(({ css, token }) => {
   const { antCls } = token;
   return {
@@ -273,7 +272,6 @@ const columns = ({
 
 const App = () => {
   console.log("customers reviews page app");
-  alert("app page");
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [editingKey, setEditingKey] = useState(null); // _id of the editing row
