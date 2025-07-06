@@ -278,9 +278,7 @@ const App = () => {
   const [editingField, setEditingField] = useState(null); // field name being edited
   const [editingValue, setEditingValue] = useState(""); // current value
   useEffect(() => {
-    return () => {
-      makeRequest(setServices, setIsLoading);
-    };
+    makeRequest(setServices, setIsLoading);
   }, []);
   const isMobile = useIsMobile();
 

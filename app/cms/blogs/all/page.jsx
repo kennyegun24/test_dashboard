@@ -127,9 +127,7 @@ const App = () => {
   const router = useRouter();
 
   useEffect(() => {
-    return () => {
-      makeRequest(setServices, setIsLoading);
-    };
+    makeRequest(setServices, setIsLoading);
   }, []);
   const isMobile = useIsMobile();
 
