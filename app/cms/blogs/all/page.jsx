@@ -62,10 +62,10 @@ const makeRequest = async (setServices, setIsLoading) => {
   try {
     setIsLoading(true);
     const req = await axios.get(`${BACKEND_API_ROUTE}/blog`, {
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-        userId: user?.userId,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${user?.token}`,
+      //   userId: user?.userId,
+      // },
     });
     const fetch_services = await req.data;
     const all_services = await fetch_services.blogs;

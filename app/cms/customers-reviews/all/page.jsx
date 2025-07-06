@@ -102,20 +102,25 @@ const handleSaveEdit = async ({
 
 const makeRequest = async (setServices, setIsLoading) => {
   const user = await fetchUser();
+  console.log("make request");
 
   try {
+    console.log("start");
     setIsLoading(true);
     const req = await axios.get(`${BACKEND_API_ROUTE}/reviews`, {
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-        userId: user?.userId,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${user?.token}`,
+      //   userId: user?.userId,
+      // },
     });
+    console.log("req");
     const fetch_services = await req.data;
     const all_services = await fetch_services.reviews;
+    console.log(all_services);
     setServices(all_services || []);
     setIsLoading(false);
   } catch (error) {
+    console.log(error);
     setIsLoading(false);
   }
 };

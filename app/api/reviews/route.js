@@ -5,16 +5,18 @@ import { NextResponse } from "next/server";
 
 export const GET = async (req) => {
   try {
+    console.log("req");
     await connectMongoDb();
     const reviews = await Review.find().sort({ createdAt: -1 }).limit(5);
     return NextResponse.json(
       { reviews },
       {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        // headers: { "Content-Type": "application/json" },
       }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Something went wrong", details: error.message },
       { status: 500, headers: { "Content-Type": "application/json" } }
