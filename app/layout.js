@@ -18,15 +18,9 @@ import RequestProvider from "@/contexts/RequestLLoading";
 
 export const metadata = {
   twitter: {
-    title: {
-      default: "AJL WebCraft Dashboard",
-      template: `%s | AJL Dashboard`,
-    },
-    description: {
-      default:
-        "Dashboard to overview clients, revenue and organize client's works.",
-      template: `%s`,
-    },
+    title: "AJL WebCraft Dashboard",
+    description:
+      "Dashboard to overview clients, revenue and organize client's works.",
   },
   icons: {
     icon: ["/favicon.ico?v=4"],
