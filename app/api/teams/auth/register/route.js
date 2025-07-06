@@ -11,7 +11,10 @@ export const POST = async (req) => {
   try {
     await connectMongoDb();
 
-    const user = await Teams.findOne({ email });
+    // const user = await Teams.findOne({ email });
+    const user = await Teams.findOne({
+      email: { $regex: new RegExp(`^${email}$`, "i") },
+    });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

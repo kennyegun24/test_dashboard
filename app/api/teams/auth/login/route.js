@@ -11,7 +11,10 @@ export const POST = async (req, res) => {
   const { password: userPassword, email } = await body;
   try {
     await connectMongoDb();
-    const findUser = await Teams.findOne({ email: email });
+    // const findUser = await Teams.findOne({ email: email });
+    const findUser = await Teams.findOne({
+      email: { $regex: new RegExp(`^${email}$`, "i") },
+    });
     if (findUser) {
       if (!findUser?.email_confirm) {
         const email_confirm_code = crypto.randomBytes(15).toString("hex");

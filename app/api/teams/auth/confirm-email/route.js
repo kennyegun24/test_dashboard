@@ -15,7 +15,10 @@ export const POST = async (req) => {
       );
     }
 
-    const user = await Teams.findOne({ email });
+    // const user = await Teams.findOne({ email });
+    const user = await Teams.findOne({
+      email: { $regex: new RegExp(`^${email}$`, "i") },
+    });
 
     if (!user || user.email_confirm_code !== code) {
       return NextResponse.json(

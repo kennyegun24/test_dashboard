@@ -15,7 +15,10 @@ export const POST = async (req) => {
       );
     }
 
-    const user = await Teams.findOne({ email });
+    // const user = await Teams.findOne({ email });
+    const user = await Teams.findOne({
+      email: { $regex: new RegExp(`^${email}$`, "i") },
+    });
     console.log(user);
     if (!user) {
       return NextResponse.json({ error: "User not found." }, { status: 404 });
