@@ -7,6 +7,7 @@ import InputField from "@/components/TextInput";
 import { RequestContext } from "@/contexts/RequestLLoading";
 import { sendToast } from "@/lib/helper";
 import { BACKEND_API_ROUTE } from "@/utils/api_route";
+import { handleUploadToCloudinary } from "@/utils/cloudinary";
 import axios from "axios";
 import React, { useContext, useState } from "react";
 
@@ -15,24 +16,29 @@ const page = () => {
   const [review, setReview] = useState({
     name: "",
     review: "",
+    cover_image: null,
   });
   const onSave = async ({}) => {
     setLoading(true);
-    if (!review.name || !review.review)
+    if (!review.name || !review.review || !review.cover_image) {
+      setLoading(false);
       return sendToast({
         variant: "destructive",
         title: "Parameters invalid",
-        desc: "Client name and Client review should not be empty.",
+        desc: "Client name, Client review and Image should not be empty.",
       });
+    }
     const user = await fetchUser();
+    const imageUrl = await handleUploadToCloudinary(review.cover_image);
+
     try {
       const updated = await axios.post(
         `${BACKEND_API_ROUTE}/reviews`,
         {
           clientName: review.name,
           clientReview: review.review,
-          clientImage:
-            "https://res.cloudinary.com/drfqge33t/image/upload/v1745830957/freepik__background__19650_cqvfwu.png",
+          clientImage: imageUrl,
+          // "https://res.cloudinary.com/drfqge33t/image/upload/v1745830957/freepik__background__19650_cqvfwu.png",
         },
         {
           headers: {
@@ -41,7 +47,7 @@ const page = () => {
           },
         }
       );
-      if (updated.status === 200) {
+      if (updated.status === 201) {
         sendToast({
           title: "Successful",
           desc: "Client review added successfully",
@@ -75,11 +81,13 @@ const page = () => {
         optional={true}
         placeholder={"Hashtags client used!"}
       /> */}
-      {/* <ImageField
+      <ImageField
         label={"Client's image"}
         placeholder={"Place client's image here"}
         id={"client's image"}
-      /> */}
+        blogDetails={review}
+        setBlogDetails={setReview}
+      />
       <Button onSave={onSave} text={"Save"} />
     </div>
   );

@@ -13,6 +13,7 @@ import axios from "axios";
 import { sendToast } from "@/lib/helper";
 import { fetchUser } from "@/actions/fetchUser";
 import { RequestContext } from "@/contexts/RequestLLoading";
+import { handleUploadToCloudinary } from "@/utils/cloudinary";
 
 const page = () => {
   const { setLoading, loading } = useContext(RequestContext);
@@ -54,29 +55,6 @@ const page = () => {
         ...prev,
         [name.toLowerCase()]: value,
       }));
-    }
-  };
-  const handleUploadToCloudinary = async (file) => {
-    const uploadPreset = "ml_default";
-    // const cloud_name = process.env.CLOUDINARY_CLOUD_NAME
-    const cloud_name = "dnlbx1kqu";
-    // setLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
-    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
-
-    try {
-      const response = await axios.post(cloudinaryUrl, formData);
-      const imageUrl = response.data.secure_url;
-      // setLoading(false);
-      // message.success("Upload successful!");
-      console.log(imageUrl);
-      return imageUrl;
-    } catch (error) {
-      // setLoading(false);
-      // message.error("Upload failed!");
-      console.error("Error uploading image:", error);
     }
   };
 
