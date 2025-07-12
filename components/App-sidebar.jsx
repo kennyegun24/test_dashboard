@@ -105,6 +105,20 @@ const items = [
         ],
       },
       {
+        title: "Processes",
+        // url: "/cms/services",
+        children: [
+          {
+            title: "All Processes",
+            url: "/cms/processes/all",
+          },
+          {
+            title: "Add Process",
+            url: "/cms/processes/new",
+          },
+        ],
+      },
+      {
         title: "Reviews",
         // url: "/cms/customers-reviews",
         children: [

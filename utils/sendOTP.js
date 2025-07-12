@@ -286,11 +286,17 @@ const welcomEmail = ({ otp, to, subject }) => {
 };
 export const sendOtpMail = async ({ to, subject, otp }) => {
   const transporter = createTransport({
-    service: "gmail",
+    // service: "gmail",
+    host: "smtp.gmail.com",
     auth: {
       user: "kennyegun240@gmail.com",
       pass: "nzvk zrti dxxu eonz",
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
+    port: 587,
+    secure: false,
   });
 
   var mailOptions = {
