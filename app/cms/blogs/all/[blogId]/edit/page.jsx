@@ -12,20 +12,12 @@ import { RequestContext } from "@/contexts/RequestLLoading";
 import useSWR from "swr";
 import Loading from "@/app/loading";
 import Spinner from "@/components/spinner";
+import { handleUploadToCloudinary } from "@/utils/cloudinary";
 
 const page = ({ params }) => {
   const { blogId } = params;
   const [content, setContent] = useState(null);
-  const [blogDetails, setBlogDetails] = useState({
-    title: null,
-    short_summary: null,
-    cover_image: null,
-    docs: null,
-    meta_page_title: null,
-    meta_desc: null,
-    key_tags: null,
-    meta_keywords: null,
-  });
+  const [blogDetails, setBlogDetails] = useState({});
 
   const onChange = (e) => {
     setBlogDetails((p) => ({
@@ -34,35 +26,36 @@ const page = ({ params }) => {
     }));
   };
   const { setLoading } = useContext(RequestContext);
-
-  // const isBlogDetailsEmpty = (blogDetails) => {
-  //   return Object.values(blogDetails).some(
-  //     (value) => value === null || value === undefined || value === ""
-  //   );
-  // };
+  console.log(blogDetails);
+  const isBlogDetailsEmpty = (blogDetails) => {
+    return Object.values(blogDetails).some(
+      (value) => value === null || value === undefined || value === ""
+    );
+  };
 
   const onSave = async () => {
     try {
       setLoading(true);
       const user = await fetchUser();
-      console.log(blogDetails);
-      // if (isBlogDetailsEmpty(blogDetails)) {
-      //   setLoading(false);
-      //   return sendToast({
-      //     variant: "destructive",
-      //     desc: "No field should be empty",
-      //     title: "Empty fields detected",
-      //   });
-      // }
+      if (!blogDetails?.cover_image) {
+        return sendToast({
+          variant: "destructive",
+          desc: "No cover image",
+          title: "Cover image should be present",
+        });
+      }
+      const cover_image =
+        typeof blogDetails?.cover_image !== "string"
+          ? await handleUploadToCloudinary(blogDetails?.cover_image)
+          : blogDetails?.cover_image;
       const req = await axios.put(
         "/api/blog",
         {
           id: blogId,
-          body: content,
           ...blogDetails,
+          body: content,
+          cover_image,
           docs: null,
-          cover_image:
-            "https://res.cloudinary.com/drfqge33t/image/upload/v1696797490/asset22_lc0gs6.jpg",
         },
         {
           headers: {
@@ -72,26 +65,16 @@ const page = ({ params }) => {
         }
       );
 
-      setBlogDetails({
-        title: null,
-        short_summary: null,
-        cover_image: null,
-        docs: null,
-        meta_page_title: null,
-        meta_desc: null,
-        key_tags: null,
-        meta_keywords: null,
-      });
       setLoading(false);
       return sendToast({
-        desc: "Blog post created",
+        desc: "Blog post edited",
         title: "Successful",
       });
     } catch (error) {
       setLoading(false);
       return sendToast({
         variant: "destructive",
-        desc: error?.response?.data?.error || "Blog post not created",
+        desc: error?.response?.data?.error || "Blog post not edited",
         title: "Something went wrong",
       });
     }
@@ -101,6 +84,17 @@ const page = ({ params }) => {
     try {
       const req = await axios.get(`/api/blog/${blogId}`, {});
       const res = await req.data?.blog;
+      setBlogDetails({
+        title: res?.title,
+        short_summary: res?.short_summary,
+        meta_page_title: res?.meta_page_title,
+        meta_desc: res?.meta_desc,
+        key_tags: res?.key_tags,
+        meta_keywords: res?.meta_keywords,
+        cover_image: res?.cover_image,
+      });
+      console.log(blogDetails);
+      setContent(res?.body);
       console.log(res);
       return await res;
     } catch (error) {
@@ -122,17 +116,17 @@ const page = ({ params }) => {
         name={"title"}
         label={"Blog title"}
         placeholder={"Enter blog title"}
-        value={data?.title}
+        value={blogDetails?.title}
       />
       <InputField
         onChange={onChange}
         name={"short_summary"}
         label={"Short summary"}
         placeholder={"Short keypoints to catch visitors attention"}
-        value={data?.short_summary}
+        value={blogDetails?.short_summary}
       />
       <Tiptap
-        content={content || data?.body}
+        content={content || blogDetails?.body}
         setContent={setContent}
         onSave={onSave}
       />

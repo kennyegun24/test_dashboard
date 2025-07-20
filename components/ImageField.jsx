@@ -21,8 +21,8 @@ const ImageField = ({
         </button>
       </label>
       <div>
-        {blogDetails?.cover_image && (
-          <>
+        {blogDetails?.cover_image &&
+          typeof blogDetails?.cover_image !== "string" && (
             <div className={""}>
               <img
                 src={
@@ -35,8 +35,7 @@ const ImageField = ({
                 className={"h-[50px] w-[50px] object-cover"}
               />
             </div>
-          </>
-        )}
+          )}
       </div>
 
       <input

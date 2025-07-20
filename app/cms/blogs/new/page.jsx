@@ -9,6 +9,7 @@ import axios from "axios";
 import { sendToast } from "@/lib/helper";
 import { fetchUser } from "@/actions/fetchUser";
 import { RequestContext } from "@/contexts/RequestLLoading";
+import { handleUploadToCloudinary } from "@/utils/cloudinary";
 
 const page = () => {
   const [content, setContent] = useState(null);
@@ -16,7 +17,7 @@ const page = () => {
     title: null,
     short_summary: null,
     cover_image: null,
-    docs: null,
+    // docs: null,
     meta_page_title: null,
     meta_desc: null,
     key_tags: null,
@@ -49,14 +50,17 @@ const page = () => {
           title: "Empty fields detected",
         });
       }
+      const cover_image = await handleUploadToCloudinary(
+        blogDetails?.cover_image
+      );
+
       const req = await axios.post(
         "/api/blog",
         {
           body: content,
           ...blogDetails,
           docs: null,
-          cover_image:
-            "https://res.cloudinary.com/drfqge33t/image/upload/v1696797490/asset22_lc0gs6.jpg",
+          cover_image,
         },
         {
           headers: {
@@ -82,6 +86,7 @@ const page = () => {
         title: "Successful",
       });
     } catch (error) {
+      console.log(error);
       setLoading(false);
       return sendToast({
         variant: "destructive",

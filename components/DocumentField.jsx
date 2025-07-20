@@ -11,7 +11,6 @@ const DocumentField = ({
     const convertToArray = Array.from(e.target.files);
     setBlogDetails((prev) => ({ ...prev, docs: e.target.files[0] }));
   };
-  console.log(blogDetails);
   return (
     <div className="flex flex-col gap-2 my-4">
       <span className="text-[.8rem] font-[600]">{label}</span>
