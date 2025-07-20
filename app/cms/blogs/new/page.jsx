@@ -74,7 +74,7 @@ const page = () => {
         title: null,
         short_summary: null,
         cover_image: null,
-        docs: null,
+        // docs: null,
         meta_page_title: null,
         meta_desc: null,
         key_tags: null,
