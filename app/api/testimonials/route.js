@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const GET = async (req) => {
   try {
     await connectMongoDb();
-    const reviews = await Review.find().sort({ createdAt: -1 }).limit(5);
+    const reviews = await Review.find().sort({ createdAt: -1 });
     return NextResponse.json(
       { reviews },
       {
