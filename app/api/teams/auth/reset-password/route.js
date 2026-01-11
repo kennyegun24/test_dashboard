@@ -11,6 +11,7 @@ export const POST = async (req) => {
     await connectMongoDb();
 
     const { email } = await req.json();
+    console.log(email);
     if (!email) {
       return NextResponse.json(
         { error: "Email is required." },
@@ -25,7 +26,7 @@ export const POST = async (req) => {
     if (!user) {
       return NextResponse.json({ error: "Email not found." }, { status: 404 });
     }
-
+    console.log("seen user");
     const otp = crypto.randomInt(100000, 999999).toString(); // 6-digit OTP
     const otpExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
 
@@ -38,7 +39,7 @@ export const POST = async (req) => {
       subject: "Your Password Reset OTP",
       otp,
     });
-
+    console.log("sent");
     return NextResponse.json(
       { message: "OTP sent to email." },
       { status: 200 }

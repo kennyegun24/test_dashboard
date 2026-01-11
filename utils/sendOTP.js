@@ -290,7 +290,7 @@ export const sendOtpMail = async ({ to, subject, otp }) => {
     host: "smtp.gmail.com",
     auth: {
       user: "kennyegun240@gmail.com",
-      pass: "nzvk zrti dxxu eonz",
+      pass: "xzyu gwlz bqyl jpdm ",
     },
     tls: {
       rejectUnauthorized: false,
