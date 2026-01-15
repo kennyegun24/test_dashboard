@@ -19,6 +19,7 @@ const designProcess = new Schema(
 
 const projectSchema = new Schema(
   {
+    theme: { type: String },
     type: {
       type: String,
       enum: ["graphics", "others"],
@@ -63,7 +64,9 @@ const projectSchema = new Schema(
 
     bannerImg: {
       type: String,
-      required: true,
+      required: function () {
+        return this.type !== "graphics";
+      },
       trim: true,
     },
 

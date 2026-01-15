@@ -31,11 +31,43 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
+// export async function GET() {
+//   try {
+//     await connectMongoDb();
+//     const projects = await Projects.find();
+//     return NextResponse.json({ success: true, data: projects });
+//   } catch (error) {
+//     return NextResponse.json(
+//       {
+//         success: false,
+//         message: error.message || "SOMETHING WENT WRONG",
+//       },
+//       { status: 400 }
+//     );
+//   }
+// }
+
+export async function GET(request) {
   try {
     await connectMongoDb();
-    const projects = await Projects.find();
-    return NextResponse.json({ success: true, data: projects });
+
+    // Get query params
+    const { searchParams } = request.nextUrl;
+    const category = searchParams.get("category");
+
+    // Build query dynamically
+    const query = {};
+    if (category) {
+      query.category = category;
+      // or { category: { $in: [category] } } if it's an array
+    }
+
+    const projects = await Projects.find(query);
+
+    return NextResponse.json({
+      success: true,
+      data: projects,
+    });
   } catch (error) {
     return NextResponse.json(
       {
